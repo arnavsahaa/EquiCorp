@@ -34,7 +34,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="scroll-smooth">
+      <main className="scroll-smooth pt-4"> {/* Added padding-top to accommodate larger header */}
         <Hero />
         <div className="scroll-animate">
           <VideoGallery />
@@ -53,6 +53,6 @@ const Index = () => {
       <ChatBot />
     </div>
   );
-};
+}
 
 export default Index;

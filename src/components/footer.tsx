@@ -8,7 +8,7 @@ export function Footer() {
       <div className="container">
         <div className="flex flex-col items-center justify-center space-y-8">
           <div className="mb-4 flex flex-col items-center">
-            <Logo size="small" />
+            <Logo size="medium" /> {/* Using medium size instead of small for consistency */}
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-2 text-blue-600">Contact Information</h3>

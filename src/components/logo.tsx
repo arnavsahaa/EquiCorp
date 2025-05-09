@@ -3,16 +3,16 @@ import React from 'react';
 
 export function Logo({ size = "medium" }: { size?: "small" | "medium" | "large" }) {
   const sizeClasses = {
-    small: "h-10 w-auto",
-    medium: "h-16 w-auto",
-    large: "h-28 w-auto" // Increased from h-24 to h-28 for larger display
+    small: "h-12 w-auto", // Increased from h-10 to h-12
+    medium: "h-20 w-auto", // Increased from h-16 to h-20
+    large: "h-32 w-auto"  // Increased from h-28 to h-32
   };
   
   return (
     <div className="flex items-center gap-3 group">
       <div className="flex items-center justify-center transform transition-transform duration-300 group-hover:scale-110">
         <img 
-          src="/lovable-uploads/611957ff-f465-4baa-95ef-3c29788be9dc.png" 
+          src="/lovable-uploads/bfc1c3ae-f9a8-46c7-8434-ec3590e453bd.png" 
           alt="EquiCorp Logo" 
           className={sizeClasses[size]}
         />
