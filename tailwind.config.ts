@@ -64,11 +64,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				equicorp: {
-					primary: '#3B82F6',
-					secondary: '#6366F1',
-					light: '#DBEAFE',
-					dark: '#1E3A8A',
-					accent: '#F59E0B'
+					primary: '#27AE60',   // Green
+					secondary: '#F59E0B', // Amber
+					light: '#E8F5E9',     // Light green
+					dark: '#1B5E20',      // Dark green
+					accent: '#D97706'     // Amber dark
 				},
 				sap: {
 					primary: '#27AE60',
@@ -76,6 +76,18 @@ export default {
 					light: '#E8F5E9',
 					dark: '#1B5E20',
 					accent: '#66BB6A'
+				},
+				nature: {
+					green: '#2E7D32',
+					moss: '#33691E',
+					earth: '#795548',
+					sand: '#D7CCC8',
+					leaf: '#81C784',
+					forest: '#1B5E20',
+					wood: '#A1887F',
+					bark: '#5D4037',
+					soil: '#8D6E63',
+					olive: '#7CB342'
 				}
 			},
 			borderRadius: {
