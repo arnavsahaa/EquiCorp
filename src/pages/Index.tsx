@@ -31,12 +31,20 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main>
+      <main className="scroll-smooth">
         <Hero />
-        <VideoGallery />
-        <Features />
-        <Resources />
-        <Contact />
+        <div className="scroll-animate">
+          <VideoGallery />
+        </div>
+        <div className="scroll-animate">
+          <Features />
+        </div>
+        <div className="scroll-animate">
+          <Resources />
+        </div>
+        <div className="scroll-animate">
+          <Contact />
+        </div>
       </main>
       <Footer />
       <ChatBot />

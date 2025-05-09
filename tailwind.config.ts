@@ -64,35 +64,35 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				equicorp: {
-					primary: '#27AE60',   // Green
-					secondary: '#F59E0B', // Amber
-					light: '#E8F5E9',     // Light green
-					dark: '#1B5E20',      // Dark green
-					accent: '#D97706'     // Amber dark
+					primary: '#2563eb',   // Blue
+					secondary: '#10b981', // Green
+					light: '#e0f2fe',     // Light blue
+					dark: '#0f172a',      // Dark blue/black
+					accent: '#059669'     // Emerald
 				},
 				sap: {
-					primary: '#27AE60',
-					secondary: '#2ECC71',
-					light: '#E8F5E9',
-					dark: '#1B5E20',
-					accent: '#66BB6A'
+					primary: '#2563eb',
+					secondary: '#3b82f6',
+					light: '#e0f2fe',
+					dark: '#1e40af',
+					accent: '#38bdf8'
 				},
 				nature: {
-					green: '#3A7563',      // Deeper teal-green
-					moss: '#587B53',       // Mossy green
-					earth: '#A97C50',      // Earthy brown
-					sand: '#E0C9A6',       // Sandy beige
-					leaf: '#70A96C',       // Fresh leaf
-					forest: '#2A5D4C',     // Deep forest
-					wood: '#8D6346',       // Wood brown
-					bark: '#594A3C',       // Dark bark
-					soil: '#7D5C45',       // Rich soil 
-					olive: '#5E7A45',      // Olive green
-					rust: '#B55A30',       // Rusty orange
-					terracotta: '#CD5C34', // Terracotta
-					sage: '#91A88C',       // Sage green
-					stone: '#A3A097',      // Stone gray
-					clay: '#B67363'        // Clay red
+					green: '#10b981',      // Emerald
+					moss: '#059669',       // Green
+					earth: '#1e40af',      // Dark blue
+					sand: '#e0f2fe',       // Light blue
+					leaf: '#22c55e',       // Green
+					forest: '#0f766e',     // Teal
+					wood: '#1e3a8a',       // Dark blue
+					bark: '#0f172a',       // Navy/Black
+					soil: '#0f172a',       // Dark blue/black
+					olive: '#15803d',      // Green
+					rust: '#1d4ed8',       // Blue
+					terracotta: '#2563eb', // Blue
+					sage: '#34d399',       // Light green
+					stone: '#475569',      // Slate
+					clay: '#3b82f6'        // Blue
 				}
 			},
 			borderRadius: {
