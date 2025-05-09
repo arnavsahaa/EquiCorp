@@ -5,7 +5,7 @@ export function Logo({ size = "medium" }: { size?: "small" | "medium" | "large" 
   const sizeClasses = {
     small: "h-10 w-auto",
     medium: "h-16 w-auto",
-    large: "h-24 w-auto"
+    large: "h-28 w-auto" // Increased from h-24 to h-28 for larger display
   };
   
   return (
