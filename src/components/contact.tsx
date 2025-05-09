@@ -1,5 +1,5 @@
 
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,32 +29,20 @@ export function Contact() {
             
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <div className="bg-equicorp-primary/10 p-3 rounded-full">
-                  <Mail className="h-6 w-6 text-equicorp-primary" />
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <div>
                   <p className="font-medium">Email</p>
-                  <a href="mailto:arnavbprd@gmail.com" className="text-muted-foreground hover:text-equicorp-primary">
+                  <a href="mailto:arnavbprd@gmail.com" className="text-muted-foreground hover:text-primary">
                     arnavbprd@gmail.com
                   </a>
                 </div>
               </div>
               
               <div className="flex items-center gap-4">
-                <div className="bg-equicorp-primary/10 p-3 rounded-full">
-                  <Phone className="h-6 w-6 text-equicorp-primary" />
-                </div>
-                <div>
-                  <p className="font-medium">Phone</p>
-                  <a href="tel:+1234567890" className="text-muted-foreground hover:text-equicorp-primary">
-                    +1 (234) 567-890
-                  </a>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="bg-equicorp-primary/10 p-3 rounded-full">
-                  <MapPin className="h-6 w-6 text-equicorp-primary" />
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <div>
                   <p className="font-medium">Location</p>
@@ -104,7 +92,7 @@ export function Contact() {
                 />
               </div>
               
-              <Button type="submit" className="w-full bg-equicorp-primary hover:bg-equicorp-secondary">
+              <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                 Send Message
               </Button>
             </form>

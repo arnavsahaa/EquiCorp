@@ -1,80 +1,79 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 142 30% 97%;
-    --foreground: 142 25% 10%;
+    --background: 280 30% 97%;
+    --foreground: 280 25% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 142 25% 10%;
+    --card-foreground: 280 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 142 25% 10%;
+    --popover-foreground: 280 25% 10%;
 
-    --primary: 142 50% 35%;
+    --primary: 270 60% 50%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 142 25% 85%;
-    --secondary-foreground: 142 25% 10%;
+    --secondary: 280 70% 90%;
+    --secondary-foreground: 280 25% 10%;
 
-    --muted: 142 20% 92%;
-    --muted-foreground: 142 15% 40%;
+    --muted: 280 20% 92%;
+    --muted-foreground: 280 15% 40%;
 
-    --accent: 142 25% 85%;
-    --accent-foreground: 142 25% 10%;
+    --accent: 330 80% 85%;
+    --accent-foreground: 280 25% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 142 25% 85%;
-    --input: 142 25% 85%;
-    --ring: 142 50% 35%;
+    --border: 280 25% 85%;
+    --input: 280 25% 85%;
+    --ring: 270 60% 50%;
 
     --radius: 0.75rem;
     
-    --sidebar-background: 142 10% 15%;
-    --sidebar-foreground: 142 20% 90%;
-    --sidebar-primary: 142 30% 50%;
-    --sidebar-primary-foreground: 142 10% 10%;
-    --sidebar-accent: 142 15% 25%;
-    --sidebar-accent-foreground: 142 20% 90%;
-    --sidebar-border: 142 15% 25%;
-    --sidebar-ring: 142 20% 60%;
+    --sidebar-background: 280 10% 15%;
+    --sidebar-foreground: 280 20% 90%;
+    --sidebar-primary: 270 60% 50%;
+    --sidebar-primary-foreground: 280 10% 10%;
+    --sidebar-accent: 280 15% 25%;
+    --sidebar-accent-foreground: 280 20% 90%;
+    --sidebar-border: 280 15% 25%;
+    --sidebar-ring: 280 20% 60%;
   }
 
   .dark {
-    --background: 142 20% 12%;
-    --foreground: 142 20% 90%;
+    --background: 280 20% 12%;
+    --foreground: 280 20% 90%;
 
-    --card: 142 20% 14%;
-    --card-foreground: 142 20% 90%;
+    --card: 280 20% 14%;
+    --card-foreground: 280 20% 90%;
 
-    --popover: 142 20% 16%;
-    --popover-foreground: 142 20% 90%;
+    --popover: 280 20% 16%;
+    --popover-foreground: 280 20% 90%;
 
-    --primary: 142 50% 50%;
-    --primary-foreground: 142 10% 10%;
+    --primary: 270 70% 60%;
+    --primary-foreground: 280 10% 10%;
 
-    --secondary: 142 15% 25%;
-    --secondary-foreground: 142 20% 90%;
+    --secondary: 280 15% 25%;
+    --secondary-foreground: 280 20% 90%;
 
-    --muted: 142 15% 25%;
-    --muted-foreground: 142 10% 70%;
+    --muted: 280 15% 25%;
+    --muted-foreground: 280 10% 70%;
 
-    --accent: 142 15% 25%;
-    --accent-foreground: 142 20% 90%;
+    --accent: 330 70% 45%;
+    --accent-foreground: 280 20% 90%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 142 15% 25%;
-    --input: 142 15% 25%;
-    --ring: 142 20% 60%;
+    --border: 280 15% 25%;
+    --input: 280 15% 25%;
+    --ring: 270 70% 60%;
     
-    --accent-dark: 142 25% 20%;
+    --accent-dark: 280 25% 20%;
   }
 }
 
@@ -120,7 +119,7 @@
   }
   
   .text-gradient {
-    @apply bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent;
   }
 }
 

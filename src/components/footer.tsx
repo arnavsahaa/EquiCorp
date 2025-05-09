@@ -19,10 +19,6 @@ export function Footer() {
               arnavbprd@gmail.com
             </a>
           </div>
-          
-          <div className="text-xs text-muted-foreground opacity-30 mt-8 animate-float">
-            Made by Arnav
-          </div>
         </div>
       </div>
     </footer>
