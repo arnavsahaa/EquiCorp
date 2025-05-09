@@ -8,8 +8,11 @@ import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { ChatBot } from "@/components/chat-bot";
 import { useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
+  const isMobile = useIsMobile();
+  
   // Add scroll animations to elements
   useEffect(() => {
     const animateOnScroll = () => {
@@ -29,7 +32,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="scroll-smooth">
         <Hero />

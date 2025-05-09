@@ -1,10 +1,10 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Quote } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface StoryCardProps {
   name: string;
@@ -18,11 +18,11 @@ interface StoryCardProps {
 
 const StoryCard = ({ name, role, company, content, image, rating, delay = 0 }: StoryCardProps) => (
   <div 
-    className="bg-gradient-to-br from-white to-nature-green/5 dark:from-nature-forest/40 dark:to-background p-6 rounded-xl shadow-lg border border-nature-green/10 hover-lift" 
+    className="bg-gradient-to-br from-white to-blue-50 dark:from-blue-900/40 dark:to-background p-6 rounded-xl shadow-lg border border-blue-100/10 hover-lift" 
     style={{ animationDelay: `${delay}ms` }}
   >
     <div className="flex items-start gap-4 mb-4">
-      <img src={image} alt={name} className="w-16 h-16 rounded-full object-cover border-2 border-nature-green/30" />
+      <img src={image} alt={name} className="w-16 h-16 rounded-full object-cover border-2 border-blue-300/30" />
       <div>
         <h3 className="text-lg font-semibold">{name}</h3>
         <p className="text-sm text-muted-foreground">{role} at {company}</p>
@@ -37,13 +37,15 @@ const StoryCard = ({ name, role, company, content, image, rating, delay = 0 }: S
       </div>
     </div>
     <div className="relative">
-      <Quote className="absolute -top-2 -left-2 w-8 h-8 text-nature-green/20" />
+      <Quote className="absolute -top-2 -left-2 w-8 h-8 text-blue-500/20" />
       <p className="pl-6 text-gray-600 dark:text-gray-300">{content}</p>
     </div>
   </div>
 );
 
 const Stories = () => {
+  const isMobile = useIsMobile();
+  
   useEffect(() => {
     // Add scroll animation
     const animateOnScroll = () => {
@@ -63,16 +65,16 @@ const Stories = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-nature-green/10 to-nature-leaf/20 dark:from-nature-forest/40 dark:to-nature-moss/30 py-20">
+        <section className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 dark:from-blue-800/40 dark:to-blue-900/30 py-20">
           <div className="container">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 animate-fade-in">
-                Real Stories of <span className="bg-gradient-to-r from-nature-green to-nature-leaf bg-clip-text text-transparent">Workplace Justice</span>
+                Real Stories of <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">Workplace Justice</span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8 animate-fade-in" style={{animationDelay: "200ms"}}>
                 Learn how EquiCorp has helped thousands of individuals address workplace discrimination and find resolution.
@@ -85,7 +87,7 @@ const Stories = () => {
         <section className="py-16 container">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-center">Featured Story</h2>
-            <div className="bg-gradient-to-br from-white to-nature-green/10 dark:from-nature-forest/30 dark:to-background p-8 rounded-2xl shadow-xl border border-nature-green/20 animate-fade-in">
+            <div className="bg-gradient-to-br from-white to-blue-50/10 dark:from-blue-900/30 dark:to-background p-8 rounded-2xl shadow-xl border border-blue-200/20 animate-fade-in">
               <div className="flex flex-col md:flex-row gap-8 items-center">
                 <img 
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" 
@@ -99,9 +101,9 @@ const Stories = () => {
                     "After 5 years of being passed over for promotions while watching less experienced male colleagues advance, I used EquiCorp's tools to document the pattern and build my case. Their legal resources helped me understand my rights, and their platform gave me the confidence to address the issue. Today, I'm leading my own team and mentoring other women in tech."
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <span className="px-3 py-1 bg-nature-green/10 text-nature-forest dark:text-nature-leaf rounded-full text-sm">Gender Discrimination</span>
-                    <span className="px-3 py-1 bg-nature-green/10 text-nature-forest dark:text-nature-leaf rounded-full text-sm">Promotion Inequality</span>
-                    <span className="px-3 py-1 bg-nature-green/10 text-nature-forest dark:text-nature-leaf rounded-full text-sm">Tech Industry</span>
+                    <span className="px-3 py-1 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-full text-sm">Gender Discrimination</span>
+                    <span className="px-3 py-1 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-full text-sm">Promotion Inequality</span>
+                    <span className="px-3 py-1 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-full text-sm">Tech Industry</span>
                   </div>
                 </div>
               </div>
@@ -117,6 +119,7 @@ const Stories = () => {
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Story cards - keep the same content structure but with updated colors */}
             <div className="scroll-animate opacity-0">
               <StoryCard 
                 name="Michael Chen" 
@@ -128,6 +131,7 @@ const Stories = () => {
               />
             </div>
             
+            {/* Keep the other story cards with the same structure */}
             <div className="scroll-animate opacity-0">
               <StoryCard 
                 name="Aisha Williams" 
@@ -185,18 +189,19 @@ const Stories = () => {
           </div>
           
           <div className="text-center mt-12">
-            <Button className="bg-nature-green hover:bg-nature-forest hover-lift">
+            <Button className="bg-blue-500 hover:bg-blue-600 hover-lift">
               Submit Your Success Story <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </section>
         
         {/* Testimonials Scroll */}
-        <section className="py-16 bg-gradient-to-br from-nature-green/5 to-nature-leaf/10 dark:from-nature-forest/20 dark:to-nature-moss/10">
+        <section className="py-16 bg-gradient-to-br from-blue-500/5 to-blue-600/10 dark:from-blue-800/20 dark:to-blue-900/10">
           <div className="container">
             <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-center">What People Are Saying</h2>
             
             <ScrollArea className="w-full h-60 rounded-xl p-4">
+              {/* Keep the same testimonials with updated colors */}
               <div className="space-y-4">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
@@ -213,7 +218,7 @@ const Stories = () => {
                       ][i]}
                     </p>
                     <div className="mt-2 flex justify-end">
-                      <small className="text-nature-green font-medium">— EquiCorp User</small>
+                      <small className="text-blue-500 font-medium">— EquiCorp User</small>
                     </div>
                   </div>
                 ))}
@@ -224,14 +229,14 @@ const Stories = () => {
         
         {/* CTA Section */}
         <section className="py-16 container">
-          <div className="bg-gradient-to-br from-nature-green to-nature-leaf dark:from-nature-forest dark:to-nature-moss rounded-2xl overflow-hidden shadow-xl">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-700 dark:to-blue-900 rounded-2xl overflow-hidden shadow-xl">
             <div className="p-8 md:p-12 text-white">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Write Your Success Story?</h2>
               <p className="text-lg mb-6 max-w-2xl opacity-90">
                 Join thousands who have used EquiCorp to address workplace discrimination and create positive change.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-white text-nature-forest hover:bg-gray-100 hover-lift">
+                <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-100 hover-lift">
                   Get Started Today
                 </Button>
                 <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 hover-lift">
