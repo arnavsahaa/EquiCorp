@@ -69,6 +69,13 @@ export default {
 					light: '#D6BCFA',
 					dark: '#1A1F2C',
 					accent: '#1EAEDB'
+				},
+				sap: {
+					primary: '#4CAF50',
+					secondary: '#81C784',
+					light: '#E8F5E9',
+					dark: '#1B5E20',
+					accent: '#66BB6A'
 				}
 			},
 			borderRadius: {

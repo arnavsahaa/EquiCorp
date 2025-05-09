@@ -164,6 +164,7 @@ export function VideoGallery() {
   const [activeIssue, setActiveIssue] = useState(issues[0]);
   const [scrollPosition, setScrollPosition] = useState(0);
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
+  const [isPlaying, setIsPlaying] = useState(false);
   
   const handleScroll = (direction: 'left' | 'right') => {
     const container = document.getElementById('video-carousel');
@@ -210,51 +211,83 @@ export function VideoGallery() {
     handleIssueSelect(issues[prevIndex]);
   };
   
+  // Add play/pause detection to set isPlaying state
+  const handleVideoPlay = () => {
+    setIsPlaying(true);
+  };
+  
+  const handleVideoPause = () => {
+    setIsPlaying(false);
+  };
+  
   // Autoplay the first video on component mount
   useEffect(() => {
     const firstVideo = videoRefs.current[activeIssue.id];
     if (firstVideo) {
       firstVideo.play().catch(e => console.log("Initial video play prevented:", e));
+      
+      // Add event listeners for play/pause
+      firstVideo.addEventListener('play', handleVideoPlay);
+      firstVideo.addEventListener('pause', handleVideoPause);
+      
+      return () => {
+        firstVideo.removeEventListener('play', handleVideoPlay);
+        firstVideo.removeEventListener('pause', handleVideoPause);
+      };
     }
   }, []);
   
+  // Add event listeners when active issue changes
+  useEffect(() => {
+    const video = videoRefs.current[activeIssue.id];
+    if (video) {
+      video.addEventListener('play', handleVideoPlay);
+      video.addEventListener('pause', handleVideoPause);
+      
+      return () => {
+        video.removeEventListener('play', handleVideoPlay);
+        video.removeEventListener('pause', handleVideoPause);
+      };
+    }
+  }, [activeIssue]);
+  
   return (
-    <section id="issues" className="py-16 bg-gradient-to-b from-background to-equicorp-light/20 dark:to-equicorp-dark/20">
+    <section id="issues" className="py-16 bg-gradient-to-b from-background to-sap-light/20 dark:to-sap-dark/20">
       <div className="container">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gradient animate-fade-in">Workplace Issues We Address</h2>
         <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: "100ms"}}>
           EquiCorp works to expose and solve these common workplace discrimination issues that affect careers and well-being.
         </p>
 
-        {/* "Are you facing" section moved above the video gallery */}
-        <div className="bg-equicorp-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Are you facing -</h2>
-            <div className="flex gap-3">
+        {/* "Are you facing" section - centered and smaller */}
+        <div className="bg-sap-primary/10 p-5 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10 max-w-2xl mx-auto text-center">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-xl font-bold">Are you facing -</h2>
+            <div className="flex gap-2">
               <Button 
                 variant="outline" 
-                size="icon"
-                className="rounded-full hover:bg-equicorp-primary/20 transition-colors"
+                size="sm"
+                className="rounded-full hover:bg-sap-primary/20 transition-colors"
                 onClick={handlePrevIssue}
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Previous issue</span>
               </Button>
               <Button 
                 variant="outline" 
-                size="icon"
-                className="rounded-full hover:bg-equicorp-primary/20 transition-colors"
+                size="sm"
+                className="rounded-full hover:bg-sap-primary/20 transition-colors"
                 onClick={handleNextIssue}
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Next issue</span>
               </Button>
             </div>
           </div>
-          <h3 className="text-xl font-semibold mb-4 animate-pulse">{activeIssue.title}</h3>
-          <p className="text-muted-foreground">{activeIssue.description}</p>
-          <div className="mt-4">
-            <p className="font-medium italic text-equicorp-primary">"{activeIssue.tagline}"</p>
+          <h3 className="text-lg font-semibold mb-3 animate-pulse">{activeIssue.title}</h3>
+          <p className="text-muted-foreground text-sm">{activeIssue.description}</p>
+          <div className="mt-3">
+            <p className="font-medium italic text-sap-primary text-sm">"{activeIssue.tagline}"</p>
           </div>
         </div>
         
@@ -288,19 +321,24 @@ export function VideoGallery() {
                 key={issue.id} 
                 className={`flex-shrink-0 w-[300px] snap-center cursor-pointer transition-all duration-300 ${
                   activeIssue.id === issue.id 
-                    ? 'border-equicorp-primary shadow-lg shadow-equicorp-primary/20 scale-105' 
-                    : 'hover:border-equicorp-primary/50 hover:scale-103'
+                    ? 'border-sap-primary shadow-lg shadow-sap-primary/20 scale-105' 
+                    : 'hover:border-sap-primary/50 hover:scale-103'
                 } animate-fade-in`}
                 style={{animationDelay: `${issue.id * 150}ms`}}
                 onClick={() => handleIssueSelect(issue)}
               >
                 <CardContent className="p-4">
                   <div className="aspect-video mb-4 rounded-md overflow-hidden bg-muted">
-                    <img 
-                      src={issue.previewImg} 
-                      alt={issue.title} 
+                    <video
+                      poster={issue.previewImg}
                       className="w-full h-full object-cover"
-                    />
+                      muted
+                      loop
+                      playsInline
+                    >
+                      <source src={issue.videoUrl} type="video/mp4" />
+                      Your browser does not support video playback.
+                    </video>
                   </div>
                   <h3 className="font-semibold mb-1">{issue.title}</h3>
                   <p className="text-sm text-muted-foreground italic">"{issue.tagline}"</p>
@@ -312,9 +350,13 @@ export function VideoGallery() {
         
         {/* Selected Issue Content */}
         <div className="grid md:grid-cols-2 gap-8 mt-16 items-start">
-          {/* Video Display */}
-          <div className="bg-equicorp-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
+          {/* Video Display - with enlargement effect */}
+          <div className="bg-sap-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div 
+              className={`aspect-video bg-muted rounded-lg mb-4 overflow-hidden transition-all duration-500 ${
+                isPlaying ? 'scale-[1.02] shadow-xl shadow-sap-primary/30' : ''
+              }`}
+            >
               <video
                 ref={el => videoRefs.current[activeIssue.id] = el}
                 controls
@@ -323,6 +365,8 @@ export function VideoGallery() {
                 playsInline
                 className="w-full h-full object-cover"
                 poster={activeIssue.previewImg}
+                onPlay={handleVideoPlay}
+                onPause={handleVideoPause}
               >
                 <source src={activeIssue.videoUrl} type="video/mp4" />
                 Your browser does not support video playback.
@@ -340,7 +384,7 @@ export function VideoGallery() {
               <div className="space-y-6 pr-4">
                 {activeIssue.solutions.map((solution, i) => (
                   <div key={i} className="animate-fade-in" style={{animationDelay: `${i * 150}ms`}}>
-                    <h4 className="text-lg font-medium text-equicorp-primary mb-2">{solution.title}</h4>
+                    <h4 className="text-lg font-medium text-sap-primary mb-2">{solution.title}</h4>
                     <p className="text-muted-foreground">{solution.description}</p>
                     {i < activeIssue.solutions.length - 1 && (
                       <Separator className="mt-4" />
@@ -351,19 +395,19 @@ export function VideoGallery() {
                 <div className="pt-4">
                   <h4 className="text-lg font-medium mb-4">How EquiCorp can help</h4>
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
                       <HelpCircle className="h-4 w-4" />
                       Get Guidance
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
                       <Mail className="h-4 w-4" />
                       Email Support
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
                       <Phone className="h-4 w-4" />
                       Call Helpline
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
                       <Share2 className="h-4 w-4" />
                       Share Resources
                     </Button>

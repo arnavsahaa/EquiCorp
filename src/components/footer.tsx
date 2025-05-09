@@ -13,9 +13,9 @@ export function Footer() {
           </div>
           
           <div className="text-center">
-            <h3 className="text-lg font-semibold mb-2">Contact Information</h3>
+            <h3 className="text-lg font-semibold mb-2 text-sap-primary">Contact Information</h3>
             <p className="text-muted-foreground">Arnav Saha, Manipal University Jaipur</p>
-            <a href="mailto:arnavbprd@gmail.com" className="text-equicorp-primary hover:underline">
+            <a href="mailto:arnavbprd@gmail.com" className="text-sap-primary hover:underline">
               arnavbprd@gmail.com
             </a>
           </div>
