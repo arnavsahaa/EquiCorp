@@ -20,16 +20,16 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-border">
-      <div className="container flex h-20 items-center justify-between"> {/* Increased height from h-16 to h-20 */}
+      <div className="container flex h-20 items-center"> {/* Removed justify-between to allow custom positioning */}
         {/* Logo and Brand */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center mr-8">
           <a href="#" className="flex items-center gap-2">
             <Logo size="medium" variant="navbar" />
           </a>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Navigation - moved more to the left */}
+        <nav className="hidden md:flex items-center gap-6 flex-1">
           <a href="#issues" className="text-sm font-medium hover:text-blue-500 transition-colors hover:scale-105 transform duration-200">Issues</a>
           <a href="#solutions" className="text-sm font-medium hover:text-blue-500 transition-colors hover:scale-105 transform duration-200">Solutions</a>
           <a href="#resources" className="text-sm font-medium hover:text-blue-500 transition-colors hover:scale-105 transform duration-200">Resources</a>
@@ -82,8 +82,8 @@ export function Header() {
           </NavigationMenu>
         </nav>
 
-        {/* Right side actions */}
-        <div className="flex items-center gap-4">
+        {/* Right side actions - pushed to the right with ml-auto */}
+        <div className="flex items-center gap-4 ml-auto">
           <ThemeToggle />
 
           {/* Anonymous Login Button */}

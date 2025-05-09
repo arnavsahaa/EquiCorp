@@ -1,5 +1,5 @@
 
-import { Logo } from "./logo";
+import { Heart } from "lucide-react";
 import { Facebook, Twitter, Instagram, Linkedin, Copyright } from "lucide-react";
 
 export function Footer() {
@@ -8,7 +8,9 @@ export function Footer() {
       <div className="container">
         <div className="flex flex-col items-center justify-center space-y-8">
           <div className="mb-4 flex flex-col items-center">
-            <Logo size="medium" /> {/* Using medium size instead of small for consistency */}
+            <p className="text-lg font-semibold">
+              Made with <Heart className="h-5 w-5 inline-block mx-1 text-red-500 fill-red-500" /> by team EastSide
+            </p>
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-2 text-blue-600">Contact Information</h3>
