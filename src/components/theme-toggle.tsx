@@ -29,7 +29,7 @@ export function ThemeToggle() {
       variant="ghost" 
       size="icon" 
       onClick={toggleTheme}
-      className="rounded-full transition-all duration-300 hover:bg-equicorp-primary/20"
+      className="rounded-full transition-all duration-300 hover:bg-blue-500/20"
     >
       {theme === "light" ? (
         <Sun className="h-5 w-5 text-amber-500" />

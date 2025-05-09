@@ -64,11 +64,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				equicorp: {
-					primary: '#8B5CF6',
-					secondary: '#7E69AB',
-					light: '#D6BCFA',
-					dark: '#1A1F2C',
-					accent: '#1EAEDB'
+					primary: '#3B82F6',
+					secondary: '#6366F1',
+					light: '#DBEAFE',
+					dark: '#1E3A8A',
+					accent: '#F59E0B'
 				},
 				sap: {
 					primary: '#27AE60',
