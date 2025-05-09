@@ -24,8 +24,8 @@ const INITIAL_MESSAGES: Message[] = [
   },
 ];
 
-// Default Gemini API key - Note: This would typically be stored more securely
-const DEFAULT_API_KEY = "AIzaSyAnONWrR2LWBd3ZhO-Yx4xBf4E4JgGC4eU";
+// Default OpenRouter API key - Note: This would typically be stored more securely
+const DEFAULT_API_KEY = "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";
 
 // Interface for API key input
 interface ApiKeyFormProps {
@@ -38,7 +38,7 @@ interface ApiKeyFormProps {
 const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel }: ApiKeyFormProps) => {
   return (
     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-nature-green/30 animate-fade-in">
-      <h3 className="font-medium mb-4 text-center">Google Gemini API Setup</h3>
+      <h3 className="font-medium mb-4 text-center">OpenRouter API Setup</h3>
       <div className="space-y-4">
         <div>
           <label className="text-sm text-muted-foreground block mb-1">API Key</label>
@@ -46,7 +46,7 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel }: ApiKeyFormProps) =>
             type="password" 
             value={apiKey} 
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder="Enter your Gemini API key"
+            placeholder="Enter your OpenRouter API key"
             className="w-full"
           />
           <p className="text-xs mt-2 text-muted-foreground">
@@ -68,8 +68,8 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel }: ApiKeyFormProps) =>
         </div>
         <div className="border-t pt-4 mt-2">
           <p className="text-xs text-muted-foreground">
-            Don't have an API key? <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer" className="text-nature-green hover:underline">
-              Get one from Google AI Studio
+            Don't have an API key? <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer" className="text-nature-green hover:underline">
+              Get one from OpenRouter
             </a>
           </p>
         </div>
@@ -85,7 +85,7 @@ export function ChatBot() {
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
   const [showApiForm, setShowApiForm] = useState(false);
-  const [isGeminiEnabled, setIsGeminiEnabled] = useState(true); // Set to true since we have a default key
+  const [isLLMEnabled, setIsLLMEnabled] = useState(true); // Set to true since we have a default key
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -99,86 +99,69 @@ export function ChatBot() {
     }
     
     // Check for saved API key on component mount
-    const savedApiKey = localStorage.getItem("gemini_api_key");
+    const savedApiKey = localStorage.getItem("openrouter_api_key");
     if (savedApiKey) {
       setApiKey(savedApiKey);
-      setIsGeminiEnabled(true);
+      setIsLLMEnabled(true);
     } else {
       // Use the default key
-      localStorage.setItem("gemini_api_key", DEFAULT_API_KEY);
+      localStorage.setItem("openrouter_api_key", DEFAULT_API_KEY);
     }
   }, [messages, isOpen]);
 
   const handleSaveApiKey = () => {
     if (apiKey.trim()) {
-      localStorage.setItem("gemini_api_key", apiKey);
-      setIsGeminiEnabled(true);
+      localStorage.setItem("openrouter_api_key", apiKey);
+      setIsLLMEnabled(true);
       setShowApiForm(false);
       toast({
         title: "API Key Saved",
-        description: "Your Gemini API key has been saved successfully.",
+        description: "Your OpenRouter API key has been saved successfully.",
       });
     }
   };
 
-  const generateGeminiResponse = async (userMessage: string) => {
+  const generateOpenRouterResponse = async (userMessage: string) => {
     try {
       setIsTyping(true);
       
-      const geminiKey = localStorage.getItem("gemini_api_key") || apiKey;
+      const openRouterKey = localStorage.getItem("openrouter_api_key") || apiKey;
       
-      // Real Gemini API call
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
+      // OpenRouter API call
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-goog-api-key': geminiKey
+          'Authorization': `Bearer ${openRouterKey}`,
+          'HTTP-Referer': window.location.href,
+          'X-Title': 'EquiCorp Assistant'
         },
         body: JSON.stringify({
-          contents: [
+          model: "anthropic/claude-3-haiku",
+          messages: [
             {
-              parts: [
-                {
-                  text: `You are a helpful assistant for EquiCorp, a company focused on workplace equality and addressing discrimination.
-                  Answer user questions related to workplace discrimination, equal pay, harassment, and similar topics.
-                  Be compassionate, informative and helpful, but avoid giving specific legal advice.
-                  User question: ${userMessage}`
-                }
-              ]
+              role: "system",
+              content: "You are a helpful assistant for EquiCorp, a company focused on workplace equality and addressing discrimination. Answer user questions related to workplace discrimination, equal pay, harassment, and similar topics. Be compassionate, informative and helpful, but avoid giving specific legal advice."
+            },
+            {
+              role: "user",
+              content: userMessage
             }
           ],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 800,
-          },
-          safetySettings: [
-            {
-              category: "HARM_CATEGORY_HATE_SPEECH",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            }
-          ]
+          temperature: 0.7,
+          max_tokens: 800
         })
       });
       
       const data = await response.json();
       
       if (data.error) {
-        console.error("Gemini API error:", data.error);
+        console.error("OpenRouter API error:", data.error);
         setIsTyping(false);
         return "I'm having trouble connecting to my knowledge base. Please check your API key or try again later.";
       }
       
-      const botReply = data.candidates[0].content.parts[0].text;
+      const botReply = data.choices[0].message.content;
       setIsTyping(false);
       return botReply;
       
@@ -199,14 +182,14 @@ export function ChatBot() {
     
     // Generate response
     let botResponse;
-    if (isGeminiEnabled) {
-      botResponse = await generateGeminiResponse(input);
+    if (isLLMEnabled) {
+      botResponse = await generateOpenRouterResponse(input);
     } else {
-      // Fallback if Gemini is not enabled
+      // Fallback if LLM is not enabled
       setIsTyping(true);
       await new Promise(resolve => setTimeout(resolve, 1500));
       setIsTyping(false);
-      botResponse = "Please set up your Google Gemini API key to enable AI-powered responses.";
+      botResponse = "Please set up your OpenRouter API key to enable AI-powered responses.";
     }
     
     setMessages(prev => [...prev, { 
@@ -276,7 +259,7 @@ export function ChatBot() {
           {/* Privacy Banner */}
           <div className="bg-nature-terracotta/20 px-4 py-2 text-xs flex items-center border-b border-nature-terracotta/30">
             <Lock className="h-3 w-3 mr-1 text-nature-terracotta" />
-            <span>Anonymous & secure chat - powered by Google Gemini AI</span>
+            <span>Anonymous & secure chat - powered by OpenRouter AI</span>
           </div>
 
           {/* API Key Form (when shown) */}
@@ -385,9 +368,9 @@ export function ChatBot() {
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
-                {isGeminiEnabled && (
+                {isLLMEnabled && (
                   <div className="mt-2 flex items-center justify-center">
-                    <span className="text-xs text-nature-terracotta">Powered by Google Gemini</span>
+                    <span className="text-xs text-nature-terracotta">Powered by OpenRouter AI</span>
                   </div>
                 )}
               </div>
