@@ -1,14 +1,14 @@
 
 import { Logo } from "./logo";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Copyright } from "lucide-react";
 
 export function Footer() {
   return (
     <footer className="bg-background py-12 border-t">
       <div className="container">
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="mb-4">
-            <Logo />
+        <div className="flex flex-col items-center justify-center space-y-8">
+          <div className="mb-4 flex flex-col items-center">
+            <Logo size="large" />
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-2 text-blue-600">Contact Information</h3>
@@ -35,6 +35,11 @@ export function Footer() {
                 <span className="sr-only">LinkedIn</span>
               </a>
             </div>
+          </div>
+          
+          <div className="flex items-center justify-center text-muted-foreground text-sm pt-4 border-t w-full">
+            <Copyright className="h-4 w-4 mr-1" />
+            <span>2025 EquiCorp-Bringing the Change</span>
           </div>
         </div>
       </div>
