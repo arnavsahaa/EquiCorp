@@ -78,16 +78,21 @@ export default {
 					accent: '#66BB6A'
 				},
 				nature: {
-					green: '#2E7D32',
-					moss: '#33691E',
-					earth: '#795548',
-					sand: '#D7CCC8',
-					leaf: '#81C784',
-					forest: '#1B5E20',
-					wood: '#A1887F',
-					bark: '#5D4037',
-					soil: '#8D6E63',
-					olive: '#7CB342'
+					green: '#3A7563',      // Deeper teal-green
+					moss: '#587B53',       // Mossy green
+					earth: '#A97C50',      // Earthy brown
+					sand: '#E0C9A6',       // Sandy beige
+					leaf: '#70A96C',       // Fresh leaf
+					forest: '#2A5D4C',     // Deep forest
+					wood: '#8D6346',       // Wood brown
+					bark: '#594A3C',       // Dark bark
+					soil: '#7D5C45',       // Rich soil 
+					olive: '#5E7A45',      // Olive green
+					rust: '#B55A30',       // Rusty orange
+					terracotta: '#CD5C34', // Terracotta
+					sage: '#91A88C',       // Sage green
+					stone: '#A3A097',      // Stone gray
+					clay: '#B67363'        // Clay red
 				}
 			},
 			borderRadius: {

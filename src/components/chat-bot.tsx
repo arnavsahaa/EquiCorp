@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -238,23 +237,29 @@ export function ChatBot() {
 
   return (
     <>
-      {/* Chat Bot Button with animation */}
-      <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full h-14 w-14 shadow-lg bg-nature-green hover:bg-nature-forest animate-pulse hover:animate-none hover:scale-110 transition-transform z-50"
-      >
-        <MessageSquare className="h-6 w-6" />
-        <span className="sr-only">Open Chat</span>
-      </Button>
+      {/* Chat Bot Button with animation and better visibility */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-2">
+        <Button
+          onClick={() => setIsOpen(true)}
+          className={`rounded-full h-16 w-16 shadow-lg bg-nature-terracotta hover:bg-nature-rust 
+                     animate-pulse hover:animate-none hover:scale-110 transition-transform`}
+        >
+          <MessageSquare className="h-7 w-7" />
+          <span className="sr-only">Open Chat</span>
+        </Button>
+        <div className="bg-white dark:bg-gray-800 py-1 px-3 rounded-lg shadow-md text-sm font-medium text-nature-terracotta animate-bounce-subtle">
+          Share your issues anonymously
+        </div>
+      </div>
 
       {/* Chat Bot Panel */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-80 md:w-96 h-[500px] bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 flex flex-col z-50 overflow-hidden animate-fade-in">
           {/* Header */}
-          <div className="bg-nature-green p-4 text-white flex justify-between items-center">
+          <div className="bg-nature-terracotta p-4 text-white flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
-              <h3 className="font-semibold">EquiCorp Assistant</h3>
+              <h3 className="font-semibold">Anonymous Chat Assistant</h3>
             </div>
             <div className="flex items-center gap-2">
               <Button 
@@ -278,8 +283,8 @@ export function ChatBot() {
           </div>
 
           {/* Privacy Banner */}
-          <div className="bg-nature-green/20 px-4 py-2 text-xs flex items-center border-b border-nature-green/30">
-            <Lock className="h-3 w-3 mr-1 text-nature-green" />
+          <div className="bg-nature-terracotta/20 px-4 py-2 text-xs flex items-center border-b border-nature-terracotta/30">
+            <Lock className="h-3 w-3 mr-1 text-nature-terracotta" />
             <span>Anonymous & secure chat - your privacy is protected</span>
           </div>
 
@@ -306,7 +311,7 @@ export function ChatBot() {
                 >
                   <div className="flex items-center mb-1">
                     {msg.role === "bot" ? (
-                      <div className="w-5 h-5 rounded-full bg-nature-green flex items-center justify-center text-white text-xs mr-1">
+                      <div className="w-5 h-5 rounded-full bg-nature-terracotta flex items-center justify-center text-white text-xs mr-1">
                         E
                       </div>
                     ) : (
@@ -317,7 +322,7 @@ export function ChatBot() {
                   <div
                     className={`p-3 rounded-lg ${
                       msg.role === "user"
-                        ? "bg-nature-green text-white rounded-tr-none"
+                        ? "bg-nature-terracotta text-white rounded-tr-none"
                         : "bg-gray-200 dark:bg-gray-700 rounded-tl-none"
                     }`}
                   >
@@ -329,7 +334,7 @@ export function ChatBot() {
               {isTyping && (
                 <div className="mb-4 mr-auto max-w-[80%]">
                   <div className="flex items-center mb-1">
-                    <div className="w-5 h-5 rounded-full bg-nature-green flex items-center justify-center text-white text-xs mr-1">
+                    <div className="w-5 h-5 rounded-full bg-nature-terracotta flex items-center justify-center text-white text-xs mr-1">
                       E
                     </div>
                   </div>
@@ -352,13 +357,13 @@ export function ChatBot() {
               {/* Guest Login Prompt */}
               <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-xs flex items-center justify-between">
                 <div className="flex items-center">
-                  <Info className="h-3 w-3 mr-1 text-nature-green" />
+                  <Info className="h-3 w-3 mr-1 text-nature-terracotta" />
                   <span>Using guest mode - no account required</span>
                 </div>
                 <Button 
                   variant="link" 
                   size="sm" 
-                  className="text-xs p-0 h-auto text-nature-green"
+                  className="text-xs p-0 h-auto text-nature-terracotta"
                   onClick={() => {
                     toast({
                       title: "Guest Mode Active",
@@ -383,7 +388,7 @@ export function ChatBot() {
                   <Button 
                     size="icon" 
                     onClick={handleSend}
-                    className={`${isGeminiEnabled ? 'bg-nature-green' : 'bg-nature-green'} hover:bg-nature-forest transition-colors`}
+                    className={`${isGeminiEnabled ? 'bg-nature-terracotta' : 'bg-nature-terracotta'} hover:bg-nature-rust transition-colors`}
                     disabled={!input.trim()}
                   >
                     <Send className="h-4 w-4" />
@@ -391,7 +396,7 @@ export function ChatBot() {
                 </div>
                 {isGeminiEnabled && (
                   <div className="mt-2 flex items-center justify-center">
-                    <span className="text-xs text-nature-green">Powered by Google Gemini</span>
+                    <span className="text-xs text-nature-terracotta">Powered by Google Gemini</span>
                   </div>
                 )}
               </div>

@@ -1,10 +1,9 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, HelpCircle, Mail, Phone, Share2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, HelpCircle, Mail, Share2 } from 'lucide-react';
 
 // Define the video issues data
 const issues = [
@@ -252,7 +251,7 @@ export function VideoGallery() {
   }, [activeIssue]);
   
   return (
-    <section id="issues" className="py-16 bg-gradient-to-b from-background to-accent/20 dark:to-accent-dark/30">
+    <section id="issues" className="py-16 bg-gradient-to-b from-background to-nature-sand/30 dark:to-nature-forest/30">
       <div className="container">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gradient animate-fade-in">Workplace Issues We Address</h2>
         <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: "100ms"}}>
@@ -260,13 +259,13 @@ export function VideoGallery() {
         </p>
 
         {/* "Are you facing" section - centered, smaller, with video */}
-        <div className="bg-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10 max-w-3xl mx-auto">
+        <div className="bg-nature-sage/20 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10 max-w-3xl mx-auto">
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4 text-center">Are you facing</h2>
             <h3 className="text-lg font-semibold mb-3 animate-pulse text-center">{activeIssue.title}</h3>
             <p className="text-muted-foreground text-sm text-center mb-4">{activeIssue.description}</p>
             <div className="mb-4">
-              <p className="font-medium italic text-primary text-sm text-center">"{activeIssue.tagline}"</p>
+              <p className="font-medium italic text-nature-terracotta text-sm text-center">"{activeIssue.tagline}"</p>
             </div>
             
             {/* Video Display - with enlargement effect */}
@@ -278,7 +277,7 @@ export function VideoGallery() {
                 loop
                 playsInline
                 className={`w-full h-full object-cover transition-all duration-500 ${
-                  isPlaying ? 'scale-[1.02] shadow-xl shadow-primary/30' : ''
+                  isPlaying ? 'scale-[1.02] shadow-xl shadow-nature-green/30' : ''
                 }`}
                 poster={activeIssue.previewImg}
                 onPlay={handleVideoPlay}
@@ -293,7 +292,7 @@ export function VideoGallery() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="rounded-full hover:bg-primary/20 transition-colors"
+                className="rounded-full hover:bg-nature-green/20 transition-colors"
                 onClick={handlePrevIssue}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -302,7 +301,7 @@ export function VideoGallery() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="rounded-full hover:bg-primary/20 transition-colors"
+                className="rounded-full hover:bg-nature-green/20 transition-colors"
                 onClick={handleNextIssue}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -342,8 +341,8 @@ export function VideoGallery() {
                 key={issue.id} 
                 className={`flex-shrink-0 w-[300px] snap-center cursor-pointer transition-all duration-300 ${
                   activeIssue.id === issue.id 
-                    ? 'border-primary shadow-lg shadow-primary/20 scale-105' 
-                    : 'hover:border-primary/50 hover:scale-103'
+                    ? 'border-nature-terracotta shadow-lg shadow-nature-terracotta/20 scale-105' 
+                    : 'hover:border-nature-terracotta/50 hover:scale-103'
                 } animate-fade-in`}
                 style={{animationDelay: `${issue.id * 150}ms`}}
                 onClick={() => handleIssueSelect(issue)}
@@ -380,7 +379,7 @@ export function VideoGallery() {
               <div className="space-y-6 pr-4">
                 {activeIssue.solutions.map((solution, i) => (
                   <div key={i} className="animate-fade-in" style={{animationDelay: `${i * 150}ms`}}>
-                    <h4 className="text-lg font-medium text-primary mb-2">{solution.title}</h4>
+                    <h4 className="text-lg font-medium text-nature-green mb-2">{solution.title}</h4>
                     <p className="text-muted-foreground">{solution.description}</p>
                     {i < activeIssue.solutions.length - 1 && (
                       <Separator className="mt-4" />
@@ -391,19 +390,15 @@ export function VideoGallery() {
                 <div className="pt-4">
                   <h4 className="text-lg font-medium mb-4">How EquiCorp can help</h4>
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
+                    <Button variant="outline" className="gap-2 hover:bg-nature-green/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <HelpCircle className="h-4 w-4" />
                       Get Guidance
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
+                    <Button variant="outline" className="gap-2 hover:bg-nature-green/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <Mail className="h-4 w-4" />
                       Email Support
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
-                      <Phone className="h-4 w-4" />
-                      Call Helpline
-                    </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
+                    <Button variant="outline" className="gap-2 hover:bg-nature-green/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <Share2 className="h-4 w-4" />
                       Share Resources
                     </Button>
@@ -413,7 +408,7 @@ export function VideoGallery() {
             </ScrollArea>
           </div>
           
-          <div className="bg-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-nature-sage/20 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center gap-2 mb-4">
               <h3 className="text-xl font-semibold">Additional Information</h3>
               <Separator className="flex-1" />
@@ -425,7 +420,7 @@ export function VideoGallery() {
               We provide personalized support and actionable advice to address your specific situation.
             </p>
             <div className="flex justify-center mt-6">
-              <Button className="animate-float">Learn More</Button>
+              <Button className="animate-float bg-nature-terracotta hover:bg-nature-rust">Learn More</Button>
             </div>
           </div>
         </div>
