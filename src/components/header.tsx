@@ -24,7 +24,7 @@ export function Header() {
         {/* Logo and Brand */}
         <div className="flex items-center gap-2">
           <a href="#" className="flex items-center gap-2">
-            <Logo size="large" />
+            <Logo />
           </a>
         </div>
 

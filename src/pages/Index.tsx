@@ -9,6 +9,7 @@ import { Footer } from "@/components/footer";
 import { ChatBot } from "@/components/chat-bot";
 import { useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Logo } from "@/components/logo";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -35,6 +36,9 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="scroll-smooth">
+        <section className="container mt-8 mb-12 flex justify-center">
+          <Logo size="large" />
+        </section>
         <Hero />
         <div className="scroll-animate">
           <VideoGallery />
