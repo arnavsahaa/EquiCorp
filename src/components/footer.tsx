@@ -8,7 +8,8 @@ export function Footer() {
       <div className="container">
         <div className="flex flex-col items-center justify-center space-y-8">
           <div className="mb-4 flex flex-col items-center">
-            <Logo size="large" />
+            <Logo size="small" />
+            <span className="text-sm font-medium text-muted-foreground mt-2">by team Eastside</span>
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-2 text-blue-600">Contact Information</h3>

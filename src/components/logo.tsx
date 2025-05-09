@@ -3,9 +3,9 @@ import React from 'react';
 
 export function Logo({ size = "medium" }: { size?: "small" | "medium" | "large" }) {
   const sizeClasses = {
-    small: "h-10 w-auto",
+    small: "h-8 w-auto",
     medium: "h-16 w-auto",
-    large: "h-24 w-auto"
+    large: "h-20 w-auto"
   };
   
   return (
