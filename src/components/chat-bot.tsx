@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,20 +24,8 @@ const INITIAL_MESSAGES: Message[] = [
   },
 ];
 
-// Mock responses - will be replaced with Gemini API
-const RESPONSES = {
-  "pay gap": "Gender pay gaps are unfortunately common. At EquiCorp, we recommend: 1) Documenting your experience, 2) Gathering market rate data, 3) Scheduling a meeting with HR, and 4) Consider filing a formal complaint if necessary.",
-  "discrimination": "I'm sorry you're experiencing discrimination. Document all incidents, report to your HR department, and know your rights. Our platform has templates for formal complaints and can connect you with legal resources.",
-  "maternity": "Maternity discrimination is illegal in most countries. Keep records of all communications, know your legal rights to leave, and contact us for specific legal guidelines in your country.",
-  "promotion": "Being passed over for promotion based on gender is a form of discrimination. We recommend documenting achievements, seeking feedback, finding mentors, and if necessary, consulting our legal resources section.",
-  "resources": "EquiCorp offers templates for negotiations, legal literacy guides, access to community support, and tools to compare your compensation with industry benchmarks.",
-  "help": "I can assist with information on workplace rights, discrimination issues, salary negotiation tips, and connect you with resources. What specific area would you like help with?",
-  "privacy": "Your privacy is our priority. All conversations are encrypted and anonymous. We don't store personally identifiable information unless you explicitly choose to share it with us.",
-  "anonymous": "You can use our platform completely anonymously. Our guest login feature allows you to access resources without creating an account with personal details.",
-  "legal": "We provide legal resources specific to workplace discrimination laws in various countries. However, please note that our AI provides general guidance, not legal advice. For specific cases, we can connect you with specialized legal professionals.",
-  "bias": "Bias can be subtle and hard to prove. We recommend keeping detailed records, finding allies in your workplace, and consulting with our resources on addressing implicit and explicit bias.",
-  "evidence": "When documenting potential discrimination, focus on: dates, exact quotes, witnesses, email trails, performance metrics, and any patterns of behavior. Our templates can guide you through this process.",
-};
+// Default Gemini API key - Note: This would typically be stored more securely
+const DEFAULT_API_KEY = "AIzaSyAnONWrR2LWBd3ZhO-Yx4xBf4E4JgGC4eU";
 
 // Interface for API key input
 interface ApiKeyFormProps {
@@ -94,9 +83,9 @@ export function ChatBot() {
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
   const [showApiForm, setShowApiForm] = useState(false);
-  const [isGeminiEnabled, setIsGeminiEnabled] = useState(false);
+  const [isGeminiEnabled, setIsGeminiEnabled] = useState(true); // Set to true since we have a default key
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -114,6 +103,9 @@ export function ChatBot() {
     if (savedApiKey) {
       setApiKey(savedApiKey);
       setIsGeminiEnabled(true);
+    } else {
+      // Use the default key
+      localStorage.setItem("gemini_api_key", DEFAULT_API_KEY);
     }
   }, [messages, isOpen]);
 
@@ -131,59 +123,69 @@ export function ChatBot() {
 
   const generateGeminiResponse = async (userMessage: string) => {
     try {
-      // This is where we would call the Gemini API
-      // For now, we'll simulate an API call with a timeout
       setIsTyping(true);
       
-      // In a real implementation, this would be replaced with an actual API call
-      // Example structure for future implementation:
-      /*
+      const geminiKey = localStorage.getItem("gemini_api_key") || apiKey;
+      
+      // Real Gemini API call
       const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          'x-goog-api-key': geminiKey
         },
         body: JSON.stringify({
           contents: [
             {
-              role: "user",
-              parts: [{ text: userMessage }]
+              parts: [
+                {
+                  text: `You are a helpful assistant for EquiCorp, a company focused on workplace equality and addressing discrimination.
+                  Answer user questions related to workplace discrimination, equal pay, harassment, and similar topics.
+                  Be compassionate, informative and helpful, but avoid giving specific legal advice.
+                  User question: ${userMessage}`
+                }
+              ]
             }
           ],
           generationConfig: {
             temperature: 0.7,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 1024,
-          }
+            maxOutputTokens: 800,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HATE_SPEECH",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            }
+          ]
         })
       });
       
       const data = await response.json();
-      const botReply = data.candidates[0].content.parts[0].text;
-      */
       
-      // For now, use our mock responses
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
-      
-      let botResponse = "I'm not sure how to help with that specific issue, but our team is available to assist. Would you like to contact our support team?";
-      
-      const lowerInput = userMessage.toLowerCase();
-      for (const [keyword, response] of Object.entries(RESPONSES)) {
-        if (lowerInput.includes(keyword)) {
-          botResponse = response;
-          break;
-        }
+      if (data.error) {
+        console.error("Gemini API error:", data.error);
+        setIsTyping(false);
+        return "I'm having trouble connecting to my knowledge base. Please check your API key or try again later.";
       }
       
+      const botReply = data.candidates[0].content.parts[0].text;
       setIsTyping(false);
-      return botResponse;
+      return botReply;
       
     } catch (error) {
       console.error("Error generating response:", error);
       setIsTyping(false);
-      return "I'm having trouble connecting to my knowledge base right now. Please try again later.";
+      return "I'm having trouble connecting to my knowledge base right now. Please check your API key or try again later.";
     }
   };
 
@@ -200,22 +202,11 @@ export function ChatBot() {
     if (isGeminiEnabled) {
       botResponse = await generateGeminiResponse(input);
     } else {
-      // Show typing indicator
+      // Fallback if Gemini is not enabled
       setIsTyping(true);
-      
-      // Find a relevant response from our mocked data
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
-      
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setIsTyping(false);
-      const lowerInput = input.toLowerCase();
-      botResponse = "I'm not sure how to help with that specific issue, but our team is available to help. Would you like to contact our support team?";
-      
-      for (const [keyword, response] of Object.entries(RESPONSES)) {
-        if (lowerInput.includes(keyword)) {
-          botResponse = response;
-          break;
-        }
-      }
+      botResponse = "Please set up your Google Gemini API key to enable AI-powered responses.";
     }
     
     setMessages(prev => [...prev, { 
@@ -285,7 +276,7 @@ export function ChatBot() {
           {/* Privacy Banner */}
           <div className="bg-nature-terracotta/20 px-4 py-2 text-xs flex items-center border-b border-nature-terracotta/30">
             <Lock className="h-3 w-3 mr-1 text-nature-terracotta" />
-            <span>Anonymous & secure chat - your privacy is protected</span>
+            <span>Anonymous & secure chat - powered by Google Gemini AI</span>
           </div>
 
           {/* API Key Form (when shown) */}
@@ -388,7 +379,7 @@ export function ChatBot() {
                   <Button 
                     size="icon" 
                     onClick={handleSend}
-                    className={`${isGeminiEnabled ? 'bg-nature-terracotta' : 'bg-nature-terracotta'} hover:bg-nature-rust transition-colors`}
+                    className="bg-nature-terracotta hover:bg-nature-rust transition-colors"
                     disabled={!input.trim()}
                   >
                     <Send className="h-4 w-4" />
