@@ -71,8 +71,8 @@ export default {
 					accent: '#1EAEDB'
 				},
 				sap: {
-					primary: '#4CAF50',
-					secondary: '#81C784',
+					primary: '#27AE60',
+					secondary: '#2ECC71',
 					light: '#E8F5E9',
 					dark: '#1B5E20',
 					accent: '#66BB6A'
@@ -125,7 +125,15 @@ export default {
 				"spin-slow": {
 					"0%": { transform: "rotate(0deg)" },
 					"100%": { transform: "rotate(360deg)" }
-				}
+				},
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" }
+        },
+        "bounce-subtle": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-3px)" }
+        }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -134,7 +142,9 @@ export default {
 				"slide-in": "slide-in-right 0.5s ease-out",
 				"pulse-slow": "pulse-slow 3s infinite ease-in-out",
 				"float": "float 3s infinite ease-in-out",
-				"spin-slow": "spin-slow 8s infinite linear"
+				"spin-slow": "spin-slow 8s infinite linear",
+        "shimmer": "shimmer 2s infinite",
+        "bounce-subtle": "bounce-subtle 2s infinite ease-in-out"
 			}
 		}
 	},

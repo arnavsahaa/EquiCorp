@@ -252,22 +252,48 @@ export function VideoGallery() {
   }, [activeIssue]);
   
   return (
-    <section id="issues" className="py-16 bg-gradient-to-b from-background to-sap-light/20 dark:to-sap-dark/20">
+    <section id="issues" className="py-16 bg-gradient-to-b from-background to-accent/20 dark:to-accent-dark/30">
       <div className="container">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gradient animate-fade-in">Workplace Issues We Address</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gradient animate-fade-in">Workplace Issues We Address</h2>
         <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: "100ms"}}>
           EquiCorp works to expose and solve these common workplace discrimination issues that affect careers and well-being.
         </p>
 
-        {/* "Are you facing" section - centered and smaller */}
-        <div className="bg-sap-primary/10 p-5 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10 max-w-2xl mx-auto text-center">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-xl font-bold">Are you facing -</h2>
-            <div className="flex gap-2">
+        {/* "Are you facing" section - centered, smaller, with video */}
+        <div className="bg-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10 max-w-3xl mx-auto">
+          <div className="flex flex-col items-center">
+            <h2 className="text-xl font-bold mb-4 text-center">Are you facing</h2>
+            <h3 className="text-lg font-semibold mb-3 animate-pulse text-center">{activeIssue.title}</h3>
+            <p className="text-muted-foreground text-sm text-center mb-4">{activeIssue.description}</p>
+            <div className="mb-4">
+              <p className="font-medium italic text-primary text-sm text-center">"{activeIssue.tagline}"</p>
+            </div>
+            
+            {/* Video Display - with enlargement effect */}
+            <div className="aspect-video w-full max-w-2xl bg-muted rounded-lg mb-4 overflow-hidden transition-all duration-500 shadow-lg hover:shadow-xl animate-fade-in" style={{animationDelay: "200ms"}}>
+              <video
+                ref={el => videoRefs.current[activeIssue.id] = el}
+                controls
+                muted
+                loop
+                playsInline
+                className={`w-full h-full object-cover transition-all duration-500 ${
+                  isPlaying ? 'scale-[1.02] shadow-xl shadow-primary/30' : ''
+                }`}
+                poster={activeIssue.previewImg}
+                onPlay={handleVideoPlay}
+                onPause={handleVideoPause}
+              >
+                <source src={activeIssue.videoUrl} type="video/mp4" />
+                Your browser does not support video playback.
+              </video>
+            </div>
+            
+            <div className="flex gap-2 mt-2">
               <Button 
                 variant="outline" 
                 size="sm"
-                className="rounded-full hover:bg-sap-primary/20 transition-colors"
+                className="rounded-full hover:bg-primary/20 transition-colors"
                 onClick={handlePrevIssue}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -276,18 +302,13 @@ export function VideoGallery() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="rounded-full hover:bg-sap-primary/20 transition-colors"
+                className="rounded-full hover:bg-primary/20 transition-colors"
                 onClick={handleNextIssue}
               >
                 <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Next issue</span>
               </Button>
             </div>
-          </div>
-          <h3 className="text-lg font-semibold mb-3 animate-pulse">{activeIssue.title}</h3>
-          <p className="text-muted-foreground text-sm">{activeIssue.description}</p>
-          <div className="mt-3">
-            <p className="font-medium italic text-sap-primary text-sm">"{activeIssue.tagline}"</p>
           </div>
         </div>
         
@@ -321,8 +342,8 @@ export function VideoGallery() {
                 key={issue.id} 
                 className={`flex-shrink-0 w-[300px] snap-center cursor-pointer transition-all duration-300 ${
                   activeIssue.id === issue.id 
-                    ? 'border-sap-primary shadow-lg shadow-sap-primary/20 scale-105' 
-                    : 'hover:border-sap-primary/50 hover:scale-103'
+                    ? 'border-primary shadow-lg shadow-primary/20 scale-105' 
+                    : 'hover:border-primary/50 hover:scale-103'
                 } animate-fade-in`}
                 style={{animationDelay: `${issue.id * 150}ms`}}
                 onClick={() => handleIssueSelect(issue)}
@@ -348,33 +369,8 @@ export function VideoGallery() {
           </div>
         </div>
         
-        {/* Selected Issue Content */}
+        {/* Solutions Section */}
         <div className="grid md:grid-cols-2 gap-8 mt-16 items-start">
-          {/* Video Display - with enlargement effect */}
-          <div className="bg-sap-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div 
-              className={`aspect-video bg-muted rounded-lg mb-4 overflow-hidden transition-all duration-500 ${
-                isPlaying ? 'scale-[1.02] shadow-xl shadow-sap-primary/30' : ''
-              }`}
-            >
-              <video
-                ref={el => videoRefs.current[activeIssue.id] = el}
-                controls
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
-                poster={activeIssue.previewImg}
-                onPlay={handleVideoPlay}
-                onPause={handleVideoPause}
-              >
-                <source src={activeIssue.videoUrl} type="video/mp4" />
-                Your browser does not support video playback.
-              </video>
-            </div>
-          </div>
-
-          {/* Solutions Scroll */}
           <div className="animate-fade-in" style={{animationDelay: "200ms"}}>
             <div className="flex items-center gap-2 mb-4">
               <h3 className="text-xl font-semibold">Solutions</h3>
@@ -384,7 +380,7 @@ export function VideoGallery() {
               <div className="space-y-6 pr-4">
                 {activeIssue.solutions.map((solution, i) => (
                   <div key={i} className="animate-fade-in" style={{animationDelay: `${i * 150}ms`}}>
-                    <h4 className="text-lg font-medium text-sap-primary mb-2">{solution.title}</h4>
+                    <h4 className="text-lg font-medium text-primary mb-2">{solution.title}</h4>
                     <p className="text-muted-foreground">{solution.description}</p>
                     {i < activeIssue.solutions.length - 1 && (
                       <Separator className="mt-4" />
@@ -395,19 +391,19 @@ export function VideoGallery() {
                 <div className="pt-4">
                   <h4 className="text-lg font-medium mb-4">How EquiCorp can help</h4>
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <HelpCircle className="h-4 w-4" />
                       Get Guidance
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <Mail className="h-4 w-4" />
                       Email Support
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <Phone className="h-4 w-4" />
                       Call Helpline
                     </Button>
-                    <Button variant="outline" className="gap-2 hover:bg-sap-primary/20 transition-colors">
+                    <Button variant="outline" className="gap-2 hover:bg-primary/20 transition-all duration-300 hover:translate-y-[-2px]">
                       <Share2 className="h-4 w-4" />
                       Share Resources
                     </Button>
@@ -415,6 +411,22 @@ export function VideoGallery() {
                 </div>
               </div>
             </ScrollArea>
+          </div>
+          
+          <div className="bg-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-xl font-semibold">Additional Information</h3>
+              <Separator className="flex-1" />
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Our team of experts has developed comprehensive guides and resources to help you navigate workplace discrimination issues.
+            </p>
+            <p className="text-muted-foreground mb-4">
+              We provide personalized support and actionable advice to address your specific situation.
+            </p>
+            <div className="flex justify-center mt-6">
+              <Button className="animate-float">Learn More</Button>
+            </div>
           </div>
         </div>
       </div>
