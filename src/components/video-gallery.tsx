@@ -1,10 +1,17 @@
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, HelpCircle, Mail, Phone, Share2 } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 // Define the video issues data
 const issues = [
@@ -13,7 +20,7 @@ const issues = [
     title: "The Missed Promotion",
     description: "Two equally hard-working students/employees. He gets promoted. She gets ignored.",
     tagline: "Same input. Different outcome.",
-    videoUrl: "/videos/missed_promotion.mp4", // This will be replaced with your videos
+    videoUrl: "/videos/missed_promotion.mp4", 
     previewImg: "https://placehold.co/600x400/purple/white?text=Promotion+Bias",
     solutions: [
       {
@@ -163,6 +170,7 @@ const issues = [
 export function VideoGallery() {
   const [activeIssue, setActiveIssue] = useState(issues[0]);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   
   const handleScroll = (direction: 'left' | 'right') => {
     const container = document.getElementById('video-carousel');
@@ -177,11 +185,39 @@ export function VideoGallery() {
     setScrollPosition(newPosition);
   };
   
+  const handleIssueSelect = (issue: typeof issues[0]) => {
+    setActiveIssue(issue);
+    
+    // Reset all videos
+    Object.values(videoRefs.current).forEach(videoEl => {
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      }
+    });
+    
+    // Play the selected video after a short delay
+    setTimeout(() => {
+      const activeVideo = videoRefs.current[issue.id];
+      if (activeVideo) {
+        activeVideo.play().catch(e => console.log("Video play prevented:", e));
+      }
+    }, 300);
+  };
+  
+  // Autoplay the first video on component mount
+  useEffect(() => {
+    const firstVideo = videoRefs.current[activeIssue.id];
+    if (firstVideo) {
+      firstVideo.play().catch(e => console.log("Initial video play prevented:", e));
+    }
+  }, []);
+  
   return (
     <section id="issues" className="py-16 bg-gradient-to-b from-background to-equicorp-light/20 dark:to-equicorp-dark/20">
       <div className="container">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gradient">Workplace Issues We Address</h2>
-        <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gradient animate-fade-in">Workplace Issues We Address</h2>
+        <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: "100ms"}}>
           EquiCorp works to expose and solve these common workplace discrimination issues that affect careers and well-being.
         </p>
         
@@ -190,7 +226,7 @@ export function VideoGallery() {
           <Button 
             variant="secondary"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full opacity-80 hover:opacity-100 shadow-lg"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full opacity-80 hover:opacity-100 shadow-lg hover:scale-110 transition-transform"
             onClick={() => handleScroll('left')}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -199,7 +235,7 @@ export function VideoGallery() {
           <Button 
             variant="secondary"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full opacity-80 hover:opacity-100 shadow-lg"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full opacity-80 hover:opacity-100 shadow-lg hover:scale-110 transition-transform"
             onClick={() => handleScroll('right')}
           >
             <ChevronRight className="h-5 w-5" />
@@ -213,12 +249,13 @@ export function VideoGallery() {
             {issues.map((issue) => (
               <Card 
                 key={issue.id} 
-                className={`flex-shrink-0 w-[300px] snap-center cursor-pointer transition-all ${
+                className={`flex-shrink-0 w-[300px] snap-center cursor-pointer transition-all duration-300 ${
                   activeIssue.id === issue.id 
                     ? 'border-equicorp-primary shadow-lg shadow-equicorp-primary/20 scale-105' 
-                    : 'hover:border-equicorp-primary/50'
-                }`}
-                onClick={() => setActiveIssue(issue)}
+                    : 'hover:border-equicorp-primary/50 hover:scale-103'
+                } animate-fade-in`}
+                style={{animationDelay: `${issue.id * 150}ms`}}
+                onClick={() => handleIssueSelect(issue)}
               >
                 <CardContent className="p-4">
                   <div className="aspect-video mb-4 rounded-md overflow-hidden bg-muted">
@@ -239,24 +276,23 @@ export function VideoGallery() {
         {/* Selected Issue Content */}
         <div className="grid md:grid-cols-2 gap-8 mt-16 items-start">
           {/* Video Display */}
-          <div className="bg-equicorp-primary/10 p-6 rounded-2xl">
+          <div className="bg-equicorp-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
             <h2 className="text-2xl font-bold mb-2">Are you facing -</h2>
             <h3 className="text-xl font-semibold mb-4">{activeIssue.title}</h3>
             <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
-              <img 
-                src={activeIssue.previewImg} 
-                alt={activeIssue.title} 
-                className="w-full h-full object-cover"
-              />
-              {/* Note: Replace img with video element once you have your videos */}
-              {/* <video
+              {/* Uncomment this and replace the img tag when you have actual videos */}
+              <video
+                ref={el => videoRefs.current[activeIssue.id] = el}
                 controls
+                muted
+                loop
+                playsInline
                 className="w-full h-full object-cover"
                 poster={activeIssue.previewImg}
               >
                 <source src={activeIssue.videoUrl} type="video/mp4" />
                 Your browser does not support video playback.
-              </video> */}
+              </video>
             </div>
             <p className="text-muted-foreground">{activeIssue.description}</p>
             <div className="mt-4">
@@ -265,12 +301,12 @@ export function VideoGallery() {
           </div>
 
           {/* Solutions Scroll */}
-          <div>
+          <div className="animate-fade-in" style={{animationDelay: "200ms"}}>
             <div className="flex items-center gap-2 mb-4">
               <h3 className="text-xl font-semibold">Solutions</h3>
               <Separator className="flex-1" />
             </div>
-            <ScrollArea className="solution-scroll h-[400px] rounded-md border p-4">
+            <ScrollArea className="solution-scroll h-[400px] rounded-md border p-4 shadow-inner">
               <div className="space-y-6 pr-4">
                 {activeIssue.solutions.map((solution, i) => (
                   <div key={i} className="animate-fade-in" style={{animationDelay: `${i * 150}ms`}}>
@@ -285,19 +321,19 @@ export function VideoGallery() {
                 <div className="pt-4">
                   <h4 className="text-lg font-medium mb-4">How EquiCorp can help</h4>
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
                       <HelpCircle className="h-4 w-4" />
                       Get Guidance
                     </Button>
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
                       <Mail className="h-4 w-4" />
                       Email Support
                     </Button>
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
                       <Phone className="h-4 w-4" />
                       Call Helpline
                     </Button>
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2 hover:bg-equicorp-primary/20 transition-colors">
                       <Share2 className="h-4 w-4" />
                       Share Resources
                     </Button>
