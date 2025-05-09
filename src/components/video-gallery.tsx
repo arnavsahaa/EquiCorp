@@ -5,13 +5,6 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, HelpCircle, Mail, Phone, Share2 } from 'lucide-react';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 // Define the video issues data
 const issues = [
@@ -204,6 +197,18 @@ export function VideoGallery() {
       }
     }, 300);
   };
+
+  const handleNextIssue = () => {
+    const currentIndex = issues.findIndex(issue => issue.id === activeIssue.id);
+    const nextIndex = (currentIndex + 1) % issues.length;
+    handleIssueSelect(issues[nextIndex]);
+  };
+
+  const handlePrevIssue = () => {
+    const currentIndex = issues.findIndex(issue => issue.id === activeIssue.id);
+    const prevIndex = (currentIndex - 1 + issues.length) % issues.length;
+    handleIssueSelect(issues[prevIndex]);
+  };
   
   // Autoplay the first video on component mount
   useEffect(() => {
@@ -220,6 +225,38 @@ export function VideoGallery() {
         <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: "100ms"}}>
           EquiCorp works to expose and solve these common workplace discrimination issues that affect careers and well-being.
         </p>
+
+        {/* "Are you facing" section moved above the video gallery */}
+        <div className="bg-equicorp-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300 mb-10">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">Are you facing -</h2>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="rounded-full hover:bg-equicorp-primary/20 transition-colors"
+                onClick={handlePrevIssue}
+              >
+                <ChevronLeft className="h-5 w-5" />
+                <span className="sr-only">Previous issue</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="rounded-full hover:bg-equicorp-primary/20 transition-colors"
+                onClick={handleNextIssue}
+              >
+                <ChevronRight className="h-5 w-5" />
+                <span className="sr-only">Next issue</span>
+              </Button>
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold mb-4 animate-pulse">{activeIssue.title}</h3>
+          <p className="text-muted-foreground">{activeIssue.description}</p>
+          <div className="mt-4">
+            <p className="font-medium italic text-equicorp-primary">"{activeIssue.tagline}"</p>
+          </div>
+        </div>
         
         <div className="relative mb-8">
           {/* Video Carousel Navigation */}
@@ -277,10 +314,7 @@ export function VideoGallery() {
         <div className="grid md:grid-cols-2 gap-8 mt-16 items-start">
           {/* Video Display */}
           <div className="bg-equicorp-primary/10 p-6 rounded-2xl animate-fade-in shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <h2 className="text-2xl font-bold mb-2">Are you facing -</h2>
-            <h3 className="text-xl font-semibold mb-4">{activeIssue.title}</h3>
             <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
-              {/* Uncomment this and replace the img tag when you have actual videos */}
               <video
                 ref={el => videoRefs.current[activeIssue.id] = el}
                 controls
@@ -293,10 +327,6 @@ export function VideoGallery() {
                 <source src={activeIssue.videoUrl} type="video/mp4" />
                 Your browser does not support video playback.
               </video>
-            </div>
-            <p className="text-muted-foreground">{activeIssue.description}</p>
-            <div className="mt-4">
-              <p className="font-medium">"{activeIssue.tagline}"</p>
             </div>
           </div>
 
