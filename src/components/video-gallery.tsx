@@ -80,7 +80,7 @@ const issues = [
     description: "Women who report discrimination may face backlash, isolation, or career setbacks.",
     tagline: "The price of truth shouldn't be your job.",
     videoUrl: "retaliation.mp4",
-    
+    previewImg: "https://placehold.co/600x400/purple/white?text=Retaliation",
     icon: <Flag className="w-8 h-8 text-nature-terracotta" />,
     detailedDescription: "Women who report discrimination or harassment may face backlash, isolation, or career setbacks.",
     solutions: [
