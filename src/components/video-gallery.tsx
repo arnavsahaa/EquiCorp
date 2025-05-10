@@ -43,7 +43,7 @@ const issues = [
   {
     id: 2,
     title: "Occupational Segregation",
-    description: "Jobs stereotyped as "men's work" or "women's work," limiting access to high-paying fields.",
+    description: "Jobs stereotyped as 'men\'s work' or 'women\'s work,' limiting access to high-paying fields.",
     tagline: "Why can't I be an engineer too?",
     videoUrl: "/videos/occupational_segregation.mp4",
     previewImg: "https://placehold.co/600x400/purple/white?text=Occupational+Segregation",
