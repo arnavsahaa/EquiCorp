@@ -45,7 +45,7 @@ const issues = [
   {
     id: 2,
     title: "Occupational Segregation",
-    description: "Jobs stereotyped as 'men\'s work' or 'women\'s work,' limiting access to high-paying fields.",
+    description: "Jobs stereotyped as \"men's work\" or \"women's work,\" limiting access to high-paying fields.",
     tagline: "Why can't I be an engineer too?",
     videoUrl: "/videos/occupational_segregation.mp4",
     previewImg: "https://placehold.co/600x400/purple/white?text=Occupational+Segregation",
@@ -145,6 +145,7 @@ export function VideoGallery() {
   const [activeTab, setActiveTab] = useState("video");
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
   
   const handleIssueSelect = (issue: typeof issues[0]) => {
     setActiveIssue(issue);
@@ -314,59 +315,76 @@ export function VideoGallery() {
           </div>
         </div>
         
-        {/* Issue Card Carousel - Changed from grid to horizontal carousel */}
+        {/* Issue Card Carousel - Revamped with smaller, more interactive cards */}
         <div className="mt-16">
           <h3 className="text-2xl font-semibold mb-6 text-center">Browse All Issues</h3>
           
           <Carousel className="w-full max-w-5xl mx-auto">
             <CarouselContent>
               {issues.map((issue) => (
-                <CarouselItem key={issue.id} className="md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={issue.id} className="md:basis-1/3 lg:basis-1/4 px-1">
                   <Card 
-                    className={`cursor-pointer transition-all duration-300 overflow-hidden h-full ${
+                    className={`relative cursor-pointer transition-all duration-300 overflow-hidden h-64 group ${
                       activeIssue.id === issue.id 
-                        ? 'border-nature-terracotta shadow-lg shadow-nature-terracotta/10 scale-105' 
-                        : 'hover:border-nature-terracotta/50 hover:scale-103 border-transparent'
-                    } animate-fade-in backdrop-blur-sm bg-white/5 dark:bg-black/20 flex flex-col`}
+                        ? 'ring-2 ring-nature-terracotta shadow-lg' 
+                        : 'hover:ring-1 hover:ring-nature-terracotta/50'
+                    } animate-fade-in backdrop-blur-sm bg-white/5 dark:bg-black/20 flex flex-col rounded-xl`}
                     style={{animationDelay: `${issue.id * 150}ms`}}
                     onClick={() => handleIssueSelect(issue)}
+                    onMouseEnter={() => setHoveredCardId(issue.id)}
+                    onMouseLeave={() => setHoveredCardId(null)}
                   >
-                    <CardContent className="p-4 flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="p-2 rounded-full bg-nature-terracotta/20">
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-70 z-10"></div>
+                    
+                    {/* Video background */}
+                    <div className="absolute inset-0 w-full h-full">
+                      <video
+                        poster={issue.previewImg}
+                        className="w-full h-full object-cover"
+                        muted
+                        loop
+                        playsInline
+                        autoPlay={hoveredCardId === issue.id}
+                      >
+                        <source src={issue.videoUrl} type="video/mp4" />
+                      </video>
+                    </div>
+                    
+                    {/* Content overlay */}
+                    <div className="relative z-20 mt-auto p-4 text-white">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="p-1.5 rounded-full bg-nature-terracotta/40 backdrop-blur-sm">
                           {issue.icon}
                         </div>
-                        <h3 className="font-semibold">{issue.title}</h3>
+                        <h3 className="font-semibold text-sm">{issue.title}</h3>
                       </div>
-                      <div className="aspect-video mb-4 rounded-md overflow-hidden bg-muted">
-                        <video
-                          poster={issue.previewImg}
-                          className="w-full h-full object-cover"
-                          muted
-                          loop
-                          playsInline
+                      
+                      <p className="text-xs text-white/80 line-clamp-2 mb-3 transition-all duration-300 opacity-80 group-hover:opacity-100">
+                        "{issue.tagline}"
+                      </p>
+                      
+                      <div className="transform translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full text-xs bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border-white/30"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleIssueSelect(issue);
+                            setActiveTab("solutions");
+                          }}
                         >
-                          <source src={issue.videoUrl} type="video/mp4" />
-                          Your browser does not support video playback.
-                        </video>
+                          <span>Read More</span>
+                          <ChevronRight className="h-3 w-3" />
+                        </Button>
                       </div>
-                      <p className="text-sm text-muted-foreground italic">"{issue.tagline}"</p>
-                    </CardContent>
-                    <CardFooter className="p-4 pt-0">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full text-xs hover:bg-nature-terracotta/10 hover:text-nature-terracotta"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleIssueSelect(issue);
-                          setActiveTab("solutions");
-                        }}
-                      >
-                        <span>Read More</span>
-                        <ChevronRight className="h-3 w-3" />
-                      </Button>
-                    </CardFooter>
+                    </div>
+                    
+                    {/* Active indicator dot */}
+                    {activeIssue.id === issue.id && (
+                      <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-nature-terracotta z-30 animate-pulse-slow"></div>
+                    )}
                   </Card>
                 </CarouselItem>
               ))}
