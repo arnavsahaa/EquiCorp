@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -8,42 +7,10 @@ import { ChevronLeft, ChevronRight, HelpCircle, Mail, Share2, User, Users, Flag,
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
-// Define the updated video issues data with new discrimination cases
+// Define the updated video issues data with discrimination cases (Glass Ceiling removed)
 const issues = [
   {
     id: 1,
-    title: "Glass Ceiling",
-    description: "Women face invisible barriers that prevent them from advancing to higher-level positions.",
-    tagline: "So close, yet so far from reaching the top.",
-    videoUrl: "/videos/glass_ceiling.mp4", 
-    previewImg: "https://placehold.co/600x400/purple/white?text=Glass+Ceiling",
-    icon: <User className="w-8 h-8 text-nature-terracotta" />,
-    detailedDescription: "Women may face invisible barriers that prevent them from advancing to higher-level positions, especially leadership or executive roles.",
-    solutions: [
-      {
-        title: "Identify the barriers",
-        description: "Recognize organizational patterns that limit advancement opportunities for women."
-      },
-      {
-        title: "Seek mentorship",
-        description: "Connect with senior leaders who can advocate for your skills and capabilities."
-      },
-      {
-        title: "Build a strong network",
-        description: "Cultivate professional relationships across your organization and industry."
-      },
-      {
-        title: "Document achievements",
-        description: "Keep detailed records of your contributions, successes, and positive feedback."
-      },
-      {
-        title: "Advocate for transparency",
-        description: "Support policies that make promotion criteria clear and accessible to everyone."
-      }
-    ]
-  },
-  {
-    id: 2,
     title: "Occupational Segregation",
     description: "Jobs stereotyped as 'men\\'s work' or 'women\\'s work,' limiting access to high-paying fields.",
     tagline: "Why can't I be an engineer too?",
@@ -75,7 +42,7 @@ const issues = [
     ]
   },
   {
-    id: 3,
+    id: 2,
     title: "Maternity Discrimination",
     description: "Pregnant women or new mothers denied opportunities due to assumptions about commitment.",
     tagline: "Motherhood shouldn't cost me my career.",
@@ -107,7 +74,7 @@ const issues = [
     ]
   },
   {
-    id: 4,
+    id: 3,
     title: "Retaliation for Speaking Out",
     description: "Women who report discrimination may face backlash, isolation, or career setbacks.",
     tagline: "The price of truth shouldn't be your job.",
