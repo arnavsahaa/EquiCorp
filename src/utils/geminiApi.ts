@@ -6,6 +6,9 @@
 export async function callGemini(prompt: string) {
   const apiKey = "AIzaSyAnONWrR2LWBd3ZhO-Yx4xBf4E4JgGC4eU"; // Gemini API key
 
+  // Enhance the prompt with context about workplace discrimination issues
+  const enhancedPrompt = `As an expert on workplace discrimination issues such as Glass Ceiling, Occupational Segregation, Maternity Discrimination, and Retaliation for Speaking Out, please provide helpful information about: ${prompt}`;
+
   try {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/chat-bison-001:generateMessage?key=${apiKey}`,
@@ -19,7 +22,7 @@ export async function callGemini(prompt: string) {
             messages: [
               {
                 author: "user",
-                content: prompt,
+                content: enhancedPrompt,
               },
             ],
           },

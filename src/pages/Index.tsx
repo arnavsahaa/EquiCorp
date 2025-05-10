@@ -13,22 +13,36 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const Index = () => {
   const isMobile = useIsMobile();
   
-  // Add scroll animations to elements
+  // Add scroll animations to elements with enhanced performance
   useEffect(() => {
     const animateOnScroll = () => {
       const elements = document.querySelectorAll('.scroll-animate');
+      
       elements.forEach(el => {
         const rect = el.getBoundingClientRect();
-        if (rect.top <= window.innerHeight * 0.85) {
+        // Only trigger animation when element is in viewport
+        if (rect.top <= window.innerHeight * 0.85 && rect.bottom >= 0) {
           el.classList.add('animate-fade-in');
         }
       });
     };
     
-    window.addEventListener('scroll', animateOnScroll);
+    // Use requestAnimationFrame for smoother scrolling performance
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          animateOnScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
     animateOnScroll(); // Run once on component mount
     
-    return () => window.removeEventListener('scroll', animateOnScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
