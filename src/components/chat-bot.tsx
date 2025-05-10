@@ -2,8 +2,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, Send, X, Shield, Lock, User, Info, Settings } from "lucide-react";
+import { MessageSquare, Send, X, Shield, Lock, User, Info, Settings, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type Message = {
   role: "user" | "bot";
@@ -25,6 +26,7 @@ const INITIAL_MESSAGES: Message[] = [
 ];
 
 // Default OpenRouter API key - Note: This would typically be stored more securely
+// When using the default key, we'll show a warning to help users understand why it might not work
 const DEFAULT_API_KEY = "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";
 
 // Interface for API key input
@@ -33,12 +35,24 @@ interface ApiKeyFormProps {
   setApiKey: (key: string) => void;
   onSave: () => void;
   onCancel: () => void;
+  hasError: boolean;
 }
 
-const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel }: ApiKeyFormProps) => {
+const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel, hasError }: ApiKeyFormProps) => {
   return (
     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-nature-green/30 animate-fade-in">
       <h3 className="font-medium mb-4 text-center">OpenRouter API Setup</h3>
+      
+      {hasError && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>API Key Error</AlertTitle>
+          <AlertDescription>
+            The current API key appears to have insufficient credits. Please enter a different API key.
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="space-y-4">
         <div>
           <label className="text-sm text-muted-foreground block mb-1">API Key</label>
@@ -60,7 +74,7 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel }: ApiKeyFormProps) =>
           <Button 
             size="sm" 
             onClick={onSave} 
-            disabled={!apiKey.trim()}
+            disabled={!apiKey.trim() || apiKey === DEFAULT_API_KEY}
             className="bg-nature-green hover:bg-nature-forest"
           >
             Save Key
@@ -83,9 +97,10 @@ export function ChatBot() {
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
-  const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
+  const [apiKey, setApiKey] = useState("");
   const [showApiForm, setShowApiForm] = useState(false);
-  const [isLLMEnabled, setIsLLMEnabled] = useState(true); // Set to true since we have a default key
+  const [isLLMEnabled, setIsLLMEnabled] = useState(false);
+  const [hasApiError, setHasApiError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -104,8 +119,10 @@ export function ChatBot() {
       setApiKey(savedApiKey);
       setIsLLMEnabled(true);
     } else {
-      // Use the default key
-      localStorage.setItem("openrouter_api_key", DEFAULT_API_KEY);
+      // Don't use the default key automatically anymore
+      setIsLLMEnabled(false);
+      setApiKey("");
+      setShowApiForm(true);
     }
   }, [messages, isOpen]);
 
@@ -114,6 +131,7 @@ export function ChatBot() {
       localStorage.setItem("openrouter_api_key", apiKey);
       setIsLLMEnabled(true);
       setShowApiForm(false);
+      setHasApiError(false); // Reset error state when saving new key
       toast({
         title: "API Key Saved",
         description: "Your OpenRouter API key has been saved successfully.",
@@ -158,9 +176,25 @@ export function ChatBot() {
       if (data.error) {
         console.error("OpenRouter API error:", data.error);
         setIsTyping(false);
+        setHasApiError(true);
+        
+        // Show a toast with the error details
+        toast({
+          title: "API Error",
+          description: data.error.message || "There was an issue connecting to OpenRouter.",
+          variant: "destructive"
+        });
+        
+        // Open the API form if there's an issue with the key
+        if (data.error.code === 402) {
+          setShowApiForm(true);
+          return "I'm having trouble accessing my knowledge base. The API key has insufficient credits. Please add a new OpenRouter API key to continue our conversation.";
+        }
+        
         return "I'm having trouble connecting to my knowledge base. Please check your API key or try again later.";
       }
       
+      setHasApiError(false);
       const botReply = data.choices[0].message.content;
       setIsTyping(false);
       return botReply;
@@ -168,7 +202,16 @@ export function ChatBot() {
     } catch (error) {
       console.error("Error generating response:", error);
       setIsTyping(false);
-      return "I'm having trouble connecting to my knowledge base right now. Please check your API key or try again later.";
+      setHasApiError(true);
+      
+      // Show a toast with the error details
+      toast({
+        title: "Connection Error",
+        description: "Failed to connect to OpenRouter. Please check your internet connection or try again later.",
+        variant: "destructive"
+      });
+      
+      return "I'm having trouble connecting to my knowledge base right now. Please check your internet connection or try again later.";
     }
   };
 
@@ -209,6 +252,10 @@ export function ChatBot() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const handleOpenSettings = () => {
+    setShowApiForm(true);
+  };
+
   return (
     <>
       {/* Chat Bot Button with animation and better visibility */}
@@ -239,7 +286,7 @@ export function ChatBot() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => setShowApiForm(!showApiForm)} 
+                onClick={handleOpenSettings} 
                 className="h-8 w-8 rounded-full hover:bg-white/20 transition-colors"
               >
                 <Settings className="h-4 w-4" />
@@ -270,11 +317,46 @@ export function ChatBot() {
                 setApiKey={setApiKey}
                 onSave={handleSaveApiKey}
                 onCancel={() => setShowApiForm(false)}
+                hasError={hasApiError}
               />
+              
+              {/* Add helpful context about OpenRouter */}
+              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+                <h4 className="font-medium mb-2">Why do I need an API key?</h4>
+                <p className="text-xs mb-2">
+                  This chatbot uses OpenRouter to access AI models. The default key appears to have insufficient credits.
+                </p>
+                <ol className="list-decimal text-xs pl-5 space-y-1">
+                  <li>Create a free account at <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="text-nature-green underline">OpenRouter.ai</a></li>
+                  <li>Get your API key from the settings page</li>
+                  <li>Add the key here to enable AI chat</li>
+                </ol>
+                <p className="text-xs mt-2">
+                  Each OpenRouter account includes some free credits to get started.
+                </p>
+              </div>
             </div>
           ) : (
             /* Messages */
             <div className="flex-1 p-4 overflow-y-auto">
+              {hasApiError && !showApiForm && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  <AlertTitle>API Key Error</AlertTitle>
+                  <AlertDescription className="flex items-center justify-between">
+                    <span>There's an issue with your API key.</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleOpenSettings}
+                      className="mt-2"
+                    >
+                      Update API Key
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -358,17 +440,18 @@ export function ChatBot() {
                     onKeyDown={handleKeyDown}
                     placeholder="Type a message..."
                     className="flex-1"
+                    disabled={hasApiError && !isLLMEnabled}
                   />
                   <Button 
                     size="icon" 
                     onClick={handleSend}
                     className="bg-nature-terracotta hover:bg-nature-rust transition-colors"
-                    disabled={!input.trim()}
+                    disabled={!input.trim() || (hasApiError && !isLLMEnabled)}
                   >
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
-                {isLLMEnabled && (
+                {isLLMEnabled && !hasApiError && (
                   <div className="mt-2 flex items-center justify-center">
                     <span className="text-xs text-nature-terracotta">Powered by OpenRouter AI</span>
                   </div>
