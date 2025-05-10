@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { MessageSquare, Send, X, Shield, Lock, User, Info, Settings, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { callGemini } from "@/utils/geminiApi";
 
 type Message = {
   role: "user" | "bot";
@@ -29,6 +30,9 @@ const INITIAL_MESSAGES: Message[] = [
 // When using the default key, we'll show a warning to help users understand why it might not work
 const DEFAULT_API_KEY = "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";
 
+// Available AI providers
+type AIProvider = "openrouter" | "gemini";
+
 // Interface for API key input
 interface ApiKeyFormProps {
   apiKey: string;
@@ -36,12 +40,22 @@ interface ApiKeyFormProps {
   onSave: () => void;
   onCancel: () => void;
   hasError: boolean;
+  provider: AIProvider;
+  setProvider: (provider: AIProvider) => void;
 }
 
-const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel, hasError }: ApiKeyFormProps) => {
+const ApiKeyForm = ({ 
+  apiKey, 
+  setApiKey, 
+  onSave, 
+  onCancel, 
+  hasError, 
+  provider,
+  setProvider 
+}: ApiKeyFormProps) => {
   return (
     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-nature-green/30 animate-fade-in">
-      <h3 className="font-medium mb-4 text-center">OpenRouter API Setup</h3>
+      <h3 className="font-medium mb-4 text-center">AI Provider Setup</h3>
       
       {hasError && (
         <Alert variant="destructive" className="mb-4">
@@ -54,19 +68,52 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel, hasError }: ApiKeyFor
       )}
       
       <div className="space-y-4">
-        <div>
-          <label className="text-sm text-muted-foreground block mb-1">API Key</label>
-          <Input 
-            type="password" 
-            value={apiKey} 
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="Enter your OpenRouter API key"
-            className="w-full"
-          />
-          <p className="text-xs mt-2 text-muted-foreground">
-            Your API key is stored locally and never sent to our servers.
-          </p>
+        <div className="flex gap-2 mb-4">
+          <Button 
+            variant={provider === "openrouter" ? "default" : "outline"}
+            size="sm" 
+            className={provider === "openrouter" ? "bg-nature-terracotta hover:bg-nature-rust" : ""}
+            onClick={() => setProvider("openrouter")}
+          >
+            OpenRouter
+          </Button>
+          <Button 
+            variant={provider === "gemini" ? "default" : "outline"}
+            size="sm"
+            className={provider === "gemini" ? "bg-nature-terracotta hover:bg-nature-rust" : ""}
+            onClick={() => setProvider("gemini")}
+          >
+            Google Gemini
+          </Button>
         </div>
+
+        {provider === "openrouter" && (
+          <div>
+            <label className="text-sm text-muted-foreground block mb-1">OpenRouter API Key</label>
+            <Input 
+              type="password" 
+              value={apiKey} 
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="Enter your OpenRouter API key"
+              className="w-full"
+            />
+            <p className="text-xs mt-2 text-muted-foreground">
+              Your API key is stored locally and never sent to our servers.
+            </p>
+          </div>
+        )}
+        
+        {provider === "gemini" && (
+          <div>
+            <p className="text-sm mb-3">
+              Using Google's Gemini API with pre-configured key.
+            </p>
+            <div className="bg-green-50 dark:bg-green-900/20 p-2 rounded text-xs text-green-700 dark:text-green-300">
+              No API key needed - Gemini is ready to use!
+            </div>
+          </div>
+        )}
+        
         <div className="flex gap-2 justify-end mt-4">
           <Button variant="outline" size="sm" onClick={onCancel}>
             Cancel
@@ -74,19 +121,22 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSave, onCancel, hasError }: ApiKeyFor
           <Button 
             size="sm" 
             onClick={onSave} 
-            disabled={!apiKey.trim() || apiKey === DEFAULT_API_KEY}
+            disabled={provider === "openrouter" && (!apiKey.trim() || apiKey === DEFAULT_API_KEY)}
             className="bg-nature-green hover:bg-nature-forest"
           >
-            Save Key
+            Save Settings
           </Button>
         </div>
-        <div className="border-t pt-4 mt-2">
-          <p className="text-xs text-muted-foreground">
-            Don't have an API key? <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer" className="text-nature-green hover:underline">
-              Get one from OpenRouter
-            </a>
-          </p>
-        </div>
+        
+        {provider === "openrouter" && (
+          <div className="border-t pt-4 mt-2">
+            <p className="text-xs text-muted-foreground">
+              Don't have an API key? <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer" className="text-nature-green hover:underline">
+                Get one from OpenRouter
+              </a>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -101,6 +151,7 @@ export function ChatBot() {
   const [showApiForm, setShowApiForm] = useState(false);
   const [isLLMEnabled, setIsLLMEnabled] = useState(false);
   const [hasApiError, setHasApiError] = useState(false);
+  const [aiProvider, setAiProvider] = useState<AIProvider>("openrouter");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -113,10 +164,19 @@ export function ChatBot() {
       scrollToBottom();
     }
     
+    // Load saved provider preference
+    const savedProvider = localStorage.getItem("ai_provider") as AIProvider;
+    if (savedProvider) {
+      setAiProvider(savedProvider);
+    }
+    
     // Check for saved API key on component mount
     const savedApiKey = localStorage.getItem("openrouter_api_key");
     if (savedApiKey) {
       setApiKey(savedApiKey);
+      setIsLLMEnabled(true);
+    } else if (savedProvider === "gemini") {
+      // If Gemini is selected, no key is needed
       setIsLLMEnabled(true);
     } else {
       // Don't use the default key automatically anymore
@@ -127,13 +187,25 @@ export function ChatBot() {
   }, [messages, isOpen]);
 
   const handleSaveApiKey = () => {
-    if (apiKey.trim()) {
+    if (aiProvider === "gemini") {
+      // For Gemini, no API key needed
+      localStorage.setItem("ai_provider", "gemini");
+      setIsLLMEnabled(true);
+      setShowApiForm(false);
+      setHasApiError(false);
+      toast({
+        title: "Gemini API Enabled",
+        description: "Your chat is now powered by Google's Gemini AI.",
+      });
+    } else if (apiKey.trim()) {
+      // For OpenRouter, save the API key
       localStorage.setItem("openrouter_api_key", apiKey);
+      localStorage.setItem("ai_provider", "openrouter");
       setIsLLMEnabled(true);
       setShowApiForm(false);
       setHasApiError(false); // Reset error state when saving new key
       toast({
-        title: "API Key Saved",
+        title: "OpenRouter API Key Saved",
         description: "Your OpenRouter API key has been saved successfully.",
       });
     }
@@ -215,6 +287,26 @@ export function ChatBot() {
     }
   };
 
+  const generateResponse = async (userMessage: string) => {
+    setIsTyping(true);
+    
+    try {
+      if (aiProvider === "gemini") {
+        // Use Gemini API
+        const response = await callGemini(userMessage);
+        setIsTyping(false);
+        return response;
+      } else {
+        // Use OpenRouter API
+        return await generateOpenRouterResponse(userMessage);
+      }
+    } catch (error) {
+      console.error("Error generating response:", error);
+      setIsTyping(false);
+      return "I'm having trouble connecting to my knowledge base right now. Please try again later.";
+    }
+  };
+
   const handleSend = async () => {
     if (!input.trim()) return;
     
@@ -226,13 +318,13 @@ export function ChatBot() {
     // Generate response
     let botResponse;
     if (isLLMEnabled) {
-      botResponse = await generateOpenRouterResponse(input);
+      botResponse = await generateResponse(input);
     } else {
       // Fallback if LLM is not enabled
       setIsTyping(true);
       await new Promise(resolve => setTimeout(resolve, 1500));
       setIsTyping(false);
-      botResponse = "Please set up your OpenRouter API key to enable AI-powered responses.";
+      botResponse = "Please set up your AI provider to enable AI-powered responses.";
     }
     
     setMessages(prev => [...prev, { 
@@ -254,6 +346,10 @@ export function ChatBot() {
 
   const handleOpenSettings = () => {
     setShowApiForm(true);
+  };
+
+  const getProviderName = () => {
+    return aiProvider === "gemini" ? "Google Gemini" : "OpenRouter";
   };
 
   return (
@@ -306,7 +402,7 @@ export function ChatBot() {
           {/* Privacy Banner */}
           <div className="bg-nature-terracotta/20 px-4 py-2 text-xs flex items-center border-b border-nature-terracotta/30">
             <Lock className="h-3 w-3 mr-1 text-nature-terracotta" />
-            <span>Anonymous & secure chat - powered by OpenRouter AI</span>
+            <span>Anonymous & secure chat - powered by {getProviderName()}</span>
           </div>
 
           {/* API Key Form (when shown) */}
@@ -318,23 +414,38 @@ export function ChatBot() {
                 onSave={handleSaveApiKey}
                 onCancel={() => setShowApiForm(false)}
                 hasError={hasApiError}
+                provider={aiProvider}
+                setProvider={setAiProvider}
               />
               
-              {/* Add helpful context about OpenRouter */}
-              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
-                <h4 className="font-medium mb-2">Why do I need an API key?</h4>
-                <p className="text-xs mb-2">
-                  This chatbot uses OpenRouter to access AI models. The default key appears to have insufficient credits.
-                </p>
-                <ol className="list-decimal text-xs pl-5 space-y-1">
-                  <li>Create a free account at <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="text-nature-green underline">OpenRouter.ai</a></li>
-                  <li>Get your API key from the settings page</li>
-                  <li>Add the key here to enable AI chat</li>
-                </ol>
-                <p className="text-xs mt-2">
-                  Each OpenRouter account includes some free credits to get started.
-                </p>
-              </div>
+              {aiProvider === "openrouter" && (
+                <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+                  <h4 className="font-medium mb-2">Why do I need an API key?</h4>
+                  <p className="text-xs mb-2">
+                    This chatbot uses OpenRouter to access AI models. The default key appears to have insufficient credits.
+                  </p>
+                  <ol className="list-decimal text-xs pl-5 space-y-1">
+                    <li>Create a free account at <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="text-nature-green underline">OpenRouter.ai</a></li>
+                    <li>Get your API key from the settings page</li>
+                    <li>Add the key here to enable AI chat</li>
+                  </ol>
+                  <p className="text-xs mt-2">
+                    Each OpenRouter account includes some free credits to get started.
+                  </p>
+                </div>
+              )}
+              
+              {aiProvider === "gemini" && (
+                <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+                  <h4 className="font-medium mb-2">About Google Gemini</h4>
+                  <p className="text-xs mb-2">
+                    Gemini is Google's most capable AI model, designed to be helpful, harmless, and honest.
+                  </p>
+                  <p className="text-xs">
+                    This integration uses a pre-configured API key for demonstration purposes.
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             /* Messages */
@@ -453,7 +564,7 @@ export function ChatBot() {
                 </div>
                 {isLLMEnabled && !hasApiError && (
                   <div className="mt-2 flex items-center justify-center">
-                    <span className="text-xs text-nature-terracotta">Powered by OpenRouter AI</span>
+                    <span className="text-xs text-nature-terracotta">Powered by {getProviderName()}</span>
                   </div>
                 )}
               </div>
