@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -286,7 +287,7 @@ export function VideoGallery() {
           <h3 className="text-2xl font-semibold mb-6 text-center">Browse All Issues</h3>
           
           <div className="overflow-x-auto pb-6">
-            <div className="flex gap-4 min-w-max px-4">
+            <div className="flex gap-4 justify-center px-4">
               {issues.map((issue) => (
                 <Card 
                   key={issue.id} 
