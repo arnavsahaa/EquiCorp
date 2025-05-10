@@ -1,12 +1,12 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, HelpCircle, Mail, Share2, User, Users, Flag, Bell } from 'lucide-react';
+import { ChevronLeft, ChevronRight, HelpCircle, Mail, Share2, User, Users, Flag, Bell, Upload } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Link } from 'react-router-dom';
 
 // Define the updated video issues data with discrimination cases (Glass Ceiling removed)
 const issues = [
@@ -400,6 +400,12 @@ export function VideoGallery() {
               <Share2 className="h-4 w-4" />
               Share Resources
             </Button>
+            <Link to="/upload-video">
+              <Button variant="outline" className="gap-2">
+                <Upload className="h-4 w-4" />
+                Share Your Story
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
