@@ -45,7 +45,7 @@ const issues = [
   {
     id: 2,
     title: "Occupational Segregation",
-    description: "Jobs stereotyped as 'men\'s work' or 'women\'s work,' limiting access to high-paying fields.",
+    description: "Jobs stereotyped as 'men\\'s work' or 'women\\'s work,' limiting access to high-paying fields.",
     tagline: "Why can't I be an engineer too?",
     videoUrl: "/videos/occupational_segregation.mp4",
     previewImg: "https://placehold.co/600x400/purple/white?text=Occupational+Segregation",
@@ -314,74 +314,101 @@ export function VideoGallery() {
           </div>
         </div>
         
-        {/* Issue Card Carousel - Changed from grid to horizontal carousel */}
+        {/* Modern Issue Card Carousel with smaller, more interactive tiles */}
         <div className="mt-16">
           <h3 className="text-2xl font-semibold mb-6 text-center">Browse All Issues</h3>
           
-          <Carousel className="w-full max-w-5xl mx-auto">
-            <CarouselContent>
+          <div className="overflow-x-auto pb-6">
+            <div className="flex gap-4 min-w-max px-4">
               {issues.map((issue) => (
-                <CarouselItem key={issue.id} className="md:basis-1/2 lg:basis-1/3">
-                  <Card 
-                    className={`cursor-pointer transition-all duration-300 overflow-hidden h-full ${
-                      activeIssue.id === issue.id 
-                        ? 'border-nature-terracotta shadow-lg shadow-nature-terracotta/10 scale-105' 
-                        : 'hover:border-nature-terracotta/50 hover:scale-103 border-transparent'
-                    } animate-fade-in backdrop-blur-sm bg-white/5 dark:bg-black/20 flex flex-col`}
-                    style={{animationDelay: `${issue.id * 150}ms`}}
-                    onClick={() => handleIssueSelect(issue)}
-                  >
-                    <CardContent className="p-4 flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="p-2 rounded-full bg-nature-terracotta/20">
+                <Card 
+                  key={issue.id} 
+                  className={`cursor-pointer transition-all duration-300 w-64 h-[280px] overflow-hidden relative group ${
+                    activeIssue.id === issue.id 
+                      ? 'ring-2 ring-nature-terracotta shadow-lg shadow-nature-terracotta/10 translate-y-[-5px]' 
+                      : 'hover:translate-y-[-5px] border-transparent hover:shadow-md'
+                  } animate-fade-in bg-gradient-to-br from-white/5 to-nature-terracotta/5 backdrop-blur-sm flex flex-col`}
+                  style={{animationDelay: `${issue.id * 100}ms`}}
+                  onClick={() => handleIssueSelect(issue)}
+                >
+                  {/* Hover overlay with shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 animate-shimmer transition-opacity duration-300" style={{ backgroundSize: "200% 100%" }}></div>
+                  
+                  <CardContent className="p-4 flex-1 relative z-10">
+                    {/* Icon and title with subtle animation */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="p-1.5 rounded-full bg-nature-terracotta/20 group-hover:animate-pulse-slow">
+                        <div className="group-hover:animate-bounce-subtle">
                           {issue.icon}
                         </div>
-                        <h3 className="font-semibold">{issue.title}</h3>
                       </div>
-                      <div className="aspect-video mb-4 rounded-md overflow-hidden bg-muted">
+                      <h3 className="font-semibold text-sm group-hover:text-nature-terracotta transition-colors duration-300">
+                        {issue.title}
+                      </h3>
+                    </div>
+                    
+                    {/* Video thumbnail with overlay effect */}
+                    <div className="aspect-video mb-3 rounded-md overflow-hidden group-hover:ring-1 ring-white/30 transition-all">
+                      <div className="relative w-full h-full">
                         <video
                           poster={issue.previewImg}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                           muted
                           loop
                           playsInline
                         >
                           <source src={issue.videoUrl} type="video/mp4" />
-                          Your browser does not support video playback.
                         </video>
+                        
+                        {/* Play indicator overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                            <ChevronRight className="h-5 w-5 text-white" />
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground italic">"{issue.tagline}"</p>
-                    </CardContent>
-                    <CardFooter className="p-4 pt-0">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full text-xs hover:bg-nature-terracotta/10 hover:text-nature-terracotta"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleIssueSelect(issue);
-                          setActiveTab("solutions");
-                        }}
-                      >
-                        <span>Read More</span>
-                        <ChevronRight className="h-3 w-3" />
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </CarouselItem>
+                    </div>
+                    
+                    {/* Tagline with ellipsis for overflow */}
+                    <p className="text-xs text-muted-foreground italic line-clamp-2 mb-2">"{issue.tagline}"</p>
+                  </CardContent>
+                  
+                  <CardFooter className="p-3 pt-0">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full text-xs hover:bg-nature-terracotta/10 hover:text-nature-terracotta group-hover:bg-nature-terracotta/5 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleIssueSelect(issue);
+                        setActiveTab("solutions");
+                      }}
+                    >
+                      <span>Read More</span>
+                      <ChevronRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </CardFooter>
+                </Card>
               ))}
-            </CarouselContent>
-            <div className="flex justify-center gap-2 mt-4">
-              <CarouselPrevious className="static transform-none mx-1" />
-              <CarouselNext className="static transform-none mx-1" />
             </div>
-          </Carousel>
+          </div>
           
-          {/* Display detailed description for the selected issue */}
-          <div className="mt-10 max-w-2xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 text-center">
-              <h4 className="font-semibold mb-3 text-nature-terracotta">{activeIssue.title} - In Detail</h4>
-              <p className="text-muted-foreground">{activeIssue.detailedDescription}</p>
+          {/* Display detailed description for the selected issue - with enhanced design */}
+          <div className="mt-10 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: "300ms"}}>
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 text-center relative overflow-hidden">
+              {/* Decorative background element */}
+              <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-gradient-to-br from-nature-terracotta/10 to-transparent blur-xl"></div>
+              <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-nature-green/10 to-transparent blur-xl"></div>
+              
+              <div className="relative z-10">
+                <h4 className="font-semibold mb-3 text-nature-terracotta flex items-center justify-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-nature-terracotta/20 flex items-center justify-center text-xs">
+                    {activeIssue.id}
+                  </span>
+                  {activeIssue.title} - In Detail
+                </h4>
+                <p className="text-muted-foreground">{activeIssue.detailedDescription}</p>
+              </div>
             </div>
           </div>
         </div>
