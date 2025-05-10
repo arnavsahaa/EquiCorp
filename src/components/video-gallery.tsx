@@ -1,11 +1,12 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, HelpCircle, Mail, Share2, User, Users, Flag, Bell } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 // Define the updated video issues data with new discrimination cases
 const issues = [
@@ -17,6 +18,7 @@ const issues = [
     videoUrl: "/videos/glass_ceiling.mp4", 
     previewImg: "https://placehold.co/600x400/purple/white?text=Glass+Ceiling",
     icon: <User className="w-8 h-8 text-nature-terracotta" />,
+    detailedDescription: "Women may face invisible barriers that prevent them from advancing to higher-level positions, especially leadership or executive roles.",
     solutions: [
       {
         title: "Identify the barriers",
@@ -48,6 +50,7 @@ const issues = [
     videoUrl: "/videos/occupational_segregation.mp4",
     previewImg: "https://placehold.co/600x400/purple/white?text=Occupational+Segregation",
     icon: <Users className="w-8 h-8 text-nature-terracotta" />,
+    detailedDescription: "Certain jobs are stereotyped as \"men's work\" or \"women's work,\" limiting women's access to high-paying, traditionally male-dominated fields like tech or engineering.",
     solutions: [
       {
         title: "Challenge stereotypes",
@@ -79,6 +82,7 @@ const issues = [
     videoUrl: "/videos/maternity_discrimination.mp4",
     previewImg: "https://placehold.co/600x400/purple/white?text=Maternity+Discrimination",
     icon: <Bell className="w-8 h-8 text-nature-terracotta" />,
+    detailedDescription: "Pregnant women or new mothers may be denied promotions, fired, or not hired due to assumptions about their availability or commitment.",
     solutions: [
       {
         title: "Know your legal rights",
@@ -110,6 +114,7 @@ const issues = [
     videoUrl: "/videos/retaliation.mp4",
     previewImg: "https://placehold.co/600x400/purple/white?text=Retaliation",
     icon: <Flag className="w-8 h-8 text-nature-terracotta" />,
+    detailedDescription: "Women who report discrimination or harassment may face backlash, isolation, or career setbacks.",
     solutions: [
       {
         title: "Document everything",
@@ -221,12 +226,12 @@ export function VideoGallery() {
           EquiCorp works to expose and solve these common workplace discrimination issues that affect careers and well-being.
         </p>
 
-        {/* Are You Facing Section - Redesigned with glass morphism */}
-        <div className="bg-white/10 backdrop-blur-lg border border-white/20 dark:bg-black/20 rounded-2xl p-8 shadow-xl animate-fade-in mb-16 max-w-4xl mx-auto overflow-hidden relative">
+        {/* Are You Facing Section - Redesigned with glass morphism and center alignment */}
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 dark:bg-black/20 rounded-2xl p-8 shadow-xl animate-fade-in mb-16 max-w-4xl mx-auto overflow-hidden relative text-center">
           <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-br from-nature-terracotta/20 to-nature-green/10 blur-3xl"></div>
           
           <div className="relative z-10">
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="p-3 rounded-full bg-gradient-to-br from-nature-terracotta/30 to-nature-green/30 backdrop-blur-md">
                 {activeIssue.icon}
               </div>
@@ -241,7 +246,7 @@ export function VideoGallery() {
             
             <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
               <TabsList className="grid grid-cols-2 mb-6">
-                <TabsTrigger value="video">Video Example</TabsTrigger>
+                <TabsTrigger value="video">Video</TabsTrigger>
                 <TabsTrigger value="solutions">Solutions</TabsTrigger>
               </TabsList>
               
@@ -273,7 +278,7 @@ export function VideoGallery() {
                   <div className="space-y-4">
                     {activeIssue.solutions.map((solution, i) => (
                       <div key={i} className="animate-fade-in" style={{animationDelay: `${i * 100}ms`}}>
-                        <h5 className="font-medium mb-1 flex items-center gap-2">
+                        <h5 className="font-medium mb-1 flex items-center gap-2 justify-center">
                           <span className="text-xs bg-nature-green/20 text-nature-green px-2 py-0.5 rounded-full">{i+1}</span>
                           {solution.title}
                         </h5>
@@ -309,45 +314,75 @@ export function VideoGallery() {
           </div>
         </div>
         
-        {/* Issue Card Carousel - Redesigned */}
+        {/* Issue Card Carousel - Changed from grid to horizontal carousel */}
         <div className="mt-16">
           <h3 className="text-2xl font-semibold mb-6 text-center">Browse All Issues</h3>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {issues.map((issue) => (
-              <Card 
-                key={issue.id} 
-                className={`cursor-pointer transition-all duration-300 overflow-hidden ${
-                  activeIssue.id === issue.id 
-                    ? 'border-nature-terracotta shadow-lg shadow-nature-terracotta/10 scale-105' 
-                    : 'hover:border-nature-terracotta/50 hover:scale-103 border-transparent'
-                } animate-fade-in backdrop-blur-sm bg-white/5 dark:bg-black/20`}
-                style={{animationDelay: `${issue.id * 150}ms`}}
-                onClick={() => handleIssueSelect(issue)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 rounded-full bg-nature-terracotta/20">
-                      {issue.icon}
-                    </div>
-                    <h3 className="font-semibold">{issue.title}</h3>
-                  </div>
-                  <div className="aspect-video mb-4 rounded-md overflow-hidden bg-muted">
-                    <video
-                      poster={issue.previewImg}
-                      className="w-full h-full object-cover"
-                      muted
-                      loop
-                      playsInline
-                    >
-                      <source src={issue.videoUrl} type="video/mp4" />
-                      Your browser does not support video playback.
-                    </video>
-                  </div>
-                  <p className="text-sm text-muted-foreground italic">"{issue.tagline}"</p>
-                </CardContent>
-              </Card>
-            ))}
+          <Carousel className="w-full max-w-5xl mx-auto">
+            <CarouselContent>
+              {issues.map((issue) => (
+                <CarouselItem key={issue.id} className="md:basis-1/2 lg:basis-1/3">
+                  <Card 
+                    className={`cursor-pointer transition-all duration-300 overflow-hidden h-full ${
+                      activeIssue.id === issue.id 
+                        ? 'border-nature-terracotta shadow-lg shadow-nature-terracotta/10 scale-105' 
+                        : 'hover:border-nature-terracotta/50 hover:scale-103 border-transparent'
+                    } animate-fade-in backdrop-blur-sm bg-white/5 dark:bg-black/20 flex flex-col`}
+                    style={{animationDelay: `${issue.id * 150}ms`}}
+                    onClick={() => handleIssueSelect(issue)}
+                  >
+                    <CardContent className="p-4 flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 rounded-full bg-nature-terracotta/20">
+                          {issue.icon}
+                        </div>
+                        <h3 className="font-semibold">{issue.title}</h3>
+                      </div>
+                      <div className="aspect-video mb-4 rounded-md overflow-hidden bg-muted">
+                        <video
+                          poster={issue.previewImg}
+                          className="w-full h-full object-cover"
+                          muted
+                          loop
+                          playsInline
+                        >
+                          <source src={issue.videoUrl} type="video/mp4" />
+                          Your browser does not support video playback.
+                        </video>
+                      </div>
+                      <p className="text-sm text-muted-foreground italic">"{issue.tagline}"</p>
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full text-xs hover:bg-nature-terracotta/10 hover:text-nature-terracotta"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleIssueSelect(issue);
+                          setActiveTab("solutions");
+                        }}
+                      >
+                        <span>Read More</span>
+                        <ChevronRight className="h-3 w-3" />
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex justify-center gap-2 mt-4">
+              <CarouselPrevious className="static transform-none mx-1" />
+              <CarouselNext className="static transform-none mx-1" />
+            </div>
+          </Carousel>
+          
+          {/* Display detailed description for the selected issue */}
+          <div className="mt-10 max-w-2xl mx-auto">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 text-center">
+              <h4 className="font-semibold mb-3 text-nature-terracotta">{activeIssue.title} - In Detail</h4>
+              <p className="text-muted-foreground">{activeIssue.detailedDescription}</p>
+            </div>
           </div>
         </div>
         
