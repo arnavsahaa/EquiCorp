@@ -8,14 +8,22 @@ export async function callGemini(prompt: string) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/chat-bison-001:generateMessage?key=${apiKey}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          prompt: {
+            messages: [
+              {
+                author: "user",
+                content: prompt,
+              },
+            ],
+          },
+          temperature: 0.7,
         }),
       }
     );
@@ -27,7 +35,7 @@ export async function callGemini(prompt: string) {
       throw new Error(data.error?.message || "Could not fetch a response from Gemini");
     }
     
-    return data.candidates[0].content.parts[0].text;
+    return data.candidates[0].content;
   } catch (err) {
     console.error("API Error:", err);
     return "Error: Could not fetch a response from Gemini. " + (err instanceof Error ? err.message : "");
@@ -39,10 +47,6 @@ export async function callGemini(prompt: string) {
  */
 export interface GeminiResponse {
   candidates: Array<{
-    content: {
-      parts: Array<{
-        text: string;
-      }>;
-    };
+    content: string;
   }>;
 }
