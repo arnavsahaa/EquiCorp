@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -116,6 +117,7 @@ export function VideoGallery() {
   
   const handleIssueSelect = (issue: typeof issues[0]) => {
     setActiveIssue(issue);
+    setActiveTab("video");  // Switch to video tab when issue is selected
     
     // Reset all videos
     Object.values(videoRefs.current).forEach(videoEl => {
@@ -129,6 +131,8 @@ export function VideoGallery() {
     setTimeout(() => {
       const activeVideo = videoRefs.current[issue.id];
       if (activeVideo) {
+        activeVideo.src = issue.videoUrl;  // Set the source to the selected issue's video URL
+        activeVideo.load();  // Reload the video with new source
         activeVideo.play().catch(e => console.log("Video play prevented:", e));
       }
     }, 300);
@@ -159,6 +163,8 @@ export function VideoGallery() {
   useEffect(() => {
     const firstVideo = videoRefs.current[activeIssue.id];
     if (firstVideo) {
+      firstVideo.src = activeIssue.videoUrl;  // Set the initial video source
+      firstVideo.load();  // Make sure to load the video
       firstVideo.play().catch(e => console.log("Initial video play prevented:", e));
       
       // Add event listeners for play/pause
@@ -318,15 +324,11 @@ export function VideoGallery() {
                     {/* Video thumbnail with overlay effect */}
                     <div className="aspect-video mb-3 rounded-md overflow-hidden group-hover:ring-1 ring-white/30 transition-all">
                       <div className="relative w-full h-full">
-                        <video
-                          poster={issue.previewImg}
+                        <img
+                          src={issue.previewImg}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          muted
-                          loop
-                          playsInline
-                        >
-                          <source src={issue.videoUrl} type="video/mp4" />
-                        </video>
+                          alt={issue.title}
+                        />
                         
                         {/* Play indicator overlay */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
