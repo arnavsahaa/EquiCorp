@@ -79,7 +79,7 @@ const issues = [
     title: "Retaliation for Speaking Out",
     description: "Women who report discrimination may face backlash, isolation, or career setbacks.",
     tagline: "The price of truth shouldn't be your job.",
-    videoUrl: "/videos/retaliation.mp4",
+    videoUrl: "https://raw.githubusercontent.com/arnavsahaa/EquiCorp/refs/heads/main/public/videos/retaliation.mp4?token=GHSAT0AAAAAADCEDDQRAYJDBDEKGSA5C2RU2A7KMQQ",
     previewImg: "https://placehold.co/600x400/purple/white?text=Retaliation",
     icon: <Flag className="w-8 h-8 text-nature-terracotta" />,
     detailedDescription: "Women who report discrimination or harassment may face backlash, isolation, or career setbacks.",
