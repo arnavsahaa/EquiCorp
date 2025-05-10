@@ -24,6 +24,7 @@ export async function callGemini(prompt: string) {
             ],
           },
           temperature: 0.7,
+          candidateCount: 1,
         }),
       }
     );
